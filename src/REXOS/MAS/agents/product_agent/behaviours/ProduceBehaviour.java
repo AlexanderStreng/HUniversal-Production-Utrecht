@@ -169,12 +169,10 @@ public class ProduceBehaviour extends agents.shared_behaviours.ReceiveBehaviour 
 						((ProductAgent) myAgent).getProduct()
 								.addStatusDataToLog(m.getSender(),
 										step.getStatusData());
-						Logger.log(LogLevel.DEBUG, "Completed productionStep :"+_prodCounters++);
+						
 						_productionStepsCompleted++;
 						break;
 					default:
-						Logger.log(LogLevel.ERROR, "", new UnsupportedOperationException(
-								"No case for " + step.getStatus()));
 						break;
 					}
 					break;
@@ -182,15 +180,13 @@ public class ProduceBehaviour extends agents.shared_behaviours.ReceiveBehaviour 
 					/* EquipletAgent taken down */
 					break;
 				default:
-					Logger.log(LogLevel.ERROR, "", new UnsupportedOperationException("No case for "
-							+ m.getOntology()));
 					break;
 				}
 			} else {
-				Logger.log(LogLevel.DEBUG, "No ontology set!");
+				
 			}
 		} catch (Exception e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			//_bc.handleCallback(BehaviourStatus.ERROR, null);
 			//_stopProduceBehaviour = true;
 		}

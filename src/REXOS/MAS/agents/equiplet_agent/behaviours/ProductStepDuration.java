@@ -135,7 +135,7 @@ public class ProductStepDuration extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(objectId);
 			} catch (IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		}
 		responseMessage.setOntology("ProductStepDuration");
@@ -168,11 +168,11 @@ public class ProductStepDuration extends ReceiveBehaviour {
 				equipletAgent.removeBehaviour(this);
 				
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				equipletAgent.doDelete();
 			}
 		}else{
-			Logger.log(LogLevel.ERROR, "response timed out");
+			
 		}
 	}
 }

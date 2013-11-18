@@ -84,7 +84,7 @@ public class MainAgent extends Agent {
 	@Override
 	protected void setup() {
 		try {
-			Logger.log(LogLevel.DEBUG, "starting the main agent");
+			
 
 			/**
 			 * Make a new logistics agent
@@ -115,7 +115,7 @@ public class MainAgent extends Agent {
 			getContainerController().createNewAgent("EQ1", "agents.equiplet_agent.EquipletAgent", ar).start();
 			//getContainerController().createNewAgent("EQ2", "agents.equiplet_agent.EquipletAgent", ar).start();
 
-			Logger.log(LogLevel.DEBUG, "Started equiplet agent");
+			
 
 			// Create parameters
 			BasicDBObject placeParameters1 = new BasicDBObject();
@@ -199,7 +199,7 @@ public class MainAgent extends Agent {
 					getContainerController()
 							.createNewAgent("pa" + count++, "agents.product_agent.ProductAgent", args).start();
 				} catch(StaleProxyException e) {
-					Logger.log(LogLevel.ERROR, "", e);
+					
 				}
 			}
 			block();

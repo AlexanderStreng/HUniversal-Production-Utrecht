@@ -153,7 +153,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 	 */
 	@Override
 	public void setup() {
-		Logger.log(LogLevel.NOTIFICATION, "" + this.getAID().getLocalName() + " spawned as an service agent.");
+		
 
 		// handle arguments given to this agent
 		Object[] args = getArguments();
@@ -166,7 +166,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 				dbData, equipletAgentAID, getAID()
 		};
 		try {
-			Logger.log(LogLevel.DEBUG, "Trying to spawn hardware agent");
+			
 			AgentController hardwareAgentCnt =
 					getContainerController().createNewAgent(equipletAgentAID.getLocalName() + "-hardwareAgent",
 							"agents.hardware_agent.HardwareAgent", arguments);
@@ -174,7 +174,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 			hardwareAgentCnt.start();
 			hardwareAgentAID = new AID(hardwareAgentCnt.getName(), AID.ISGUID);
 		} catch(StaleProxyException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			doDelete();
 		}
 
@@ -196,7 +196,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 			serviceStepBBClient.subscribe(statusSubscription);
 			serviceStepBBClient.removeDocuments(new BasicDBObject());
 		} catch(UnknownHostException | GeneralMongoException | InvalidDBNamespaceException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			doDelete();
 		}
 
@@ -220,7 +220,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 	//@formatter:off
 	@Override
 	public void takeDown() {
-		Logger.log(LogLevel.DEBUG, "ServiceAgent takedown");
+		
 		
 		productStepBBClient.unsubscribe(statusSubscription);
 		serviceStepBBClient.unsubscribe(statusSubscription);
@@ -242,7 +242,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 			
 			serviceStepBBClient.removeDocuments(new BasicDBObject());
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 		}
 
 		ACLMessage message = new ACLMessage(ACLMessage.INFORM);
@@ -280,7 +280,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 				send(message);
 			}
 		} catch(InvalidDBNamespaceException | GeneralMongoException | IOException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 		}
 	}
 
@@ -301,9 +301,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 					switch(operation) {
 						case UPDATE:
 							StepStatusCode status = productionStep.getStatus();
-
-							Logger.log(LogLevel.DEBUG, "prod.Step %s status set to %s%n",
-									productionStep.getId(), status);
+							
 							switch(status) {
 								case WAITING:
 
@@ -317,9 +315,6 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 									}
 									serviceSteps = ServiceStep.sort(serviceSteps);
 
-									Logger.log(LogLevel.DEBUG, "setting status of serv.Step %s to %s%n",
-											serviceSteps[0].getId(), status);
-
 									// update the status of the first serviceStep to WAITING
 									serviceStepBBClient.updateDocuments(
 											new BasicDBObject("_id", serviceSteps[0].getId()),
@@ -327,8 +322,6 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 													.append("statusData", productionStep.getStatusData())));
 									break;
 								case ABORTED:
-									Logger.log(LogLevel.DEBUG, "aboring all serviceSteps of prod.Step%n",
-											entry.getTargetObjectId());
 
 									cancelAllStepsForProductStep(entry.getTargetObjectId(), productionStep
 											.getStatusData().getString("reason"));
@@ -349,7 +342,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 					switch(operation) {
 						case UPDATE:
 							StepStatusCode status = serviceStep.getServiceStepStatus();
-							Logger.log(LogLevel.DEBUG, "serv.Step %s status set to %s%n", serviceStepId, status);
+							
 							switch(status) {
 								case DELETED:
 
@@ -373,8 +366,6 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 								case DONE:
 
 									if(serviceStep.getNextServiceStep() != null) {
-										Logger.log(LogLevel.DEBUG, "setting status of next serv.Step %s to %s%n",
-												serviceStep.getNextServiceStep(), StepStatusCode.WAITING);
 										serviceStepBBClient.updateDocuments(
 												new BasicDBObject("_id", serviceStep.getNextServiceStep()),
 												new BasicDBObject("$set", new BasicDBObject("status",
@@ -382,7 +373,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 										break;
 									}
 
-									Logger.log(LogLevel.DEBUG, "saving log in prod.Step %s%n", productStepId);
+									
 
 									// save the log in the productStep
 									productStepBBClient.updateDocuments(
@@ -400,8 +391,6 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 															+ status.name()).append("log", buildLog(productStepId)))));
 									//$FALL-THROUGH$
 								case IN_PROGRESS:
-									Logger.log(LogLevel.DEBUG, "setting status of prod.Step %s to %s%n", productStepId,
-											status);
 									productStepBBClient.updateDocuments(
 											new BasicDBObject("_id", productStepId),
 											new BasicDBObject("$set", new BasicDBObject("status", status.name())));
@@ -418,7 +407,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 					break;
 			}
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			doDelete();
 		}
 	}

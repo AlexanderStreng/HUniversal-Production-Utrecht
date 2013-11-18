@@ -178,13 +178,13 @@ public class CanPerformStep extends ReceiveBehaviour implements ParentBehaviourC
 				
 				
 			} catch(InvalidDBNamespaceException | GeneralMongoException | NullPointerException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				ACLMessage errorResponse = message.createReply();
 				errorResponse.setPerformative(ACLMessage.FAILURE);
 				errorResponse.setContent("Failed to process the step");
 				equipletAgent.send(errorResponse);
 			} catch(UnreadableException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				ACLMessage errorResponse = message.createReply();
 				errorResponse.setPerformative(ACLMessage.FAILURE);
 				errorResponse.setContent("No step given");

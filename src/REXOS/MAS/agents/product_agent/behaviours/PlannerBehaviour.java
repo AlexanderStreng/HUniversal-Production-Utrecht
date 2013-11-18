@@ -142,8 +142,6 @@ public class PlannerBehaviour extends Behaviour {
 			this._isDone = true;
 		} catch (NullPointerException | InvalidDBNamespaceException
 				| GeneralMongoException | UnknownHostException e) {
-			Logger.log(LogLevel.ERROR,
-					"Exception - onStart() : ", e);
 			this._isError = true;
 		}
 	}

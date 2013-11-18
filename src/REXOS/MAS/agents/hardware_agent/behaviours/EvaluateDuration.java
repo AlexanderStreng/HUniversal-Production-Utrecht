@@ -119,8 +119,6 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		try {
 			// get the serviceStepId
 			ObjectId serviceStepId = (ObjectId) message.getContentObject();
-			Logger.log(LogLevel.DEBUG, "%s received message from %s (%s:%s)%n", hardwareAgent.getLocalName(), message.getSender()
-					.getLocalName(), message.getOntology(), serviceStepId);
 			// Evaluate the duration of the step
 			EvaluateStepDuration(serviceStepId);
 
@@ -194,7 +192,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		} 
 		catch(InvalidDBNamespaceException | GeneralMongoException e) 
 		{
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			hardwareAgent.doDelete();
 		}
 	}

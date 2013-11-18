@@ -130,7 +130,7 @@ public class AbortStep extends ReceiveBehaviour {
 					myAgent.send(reply);
 				}
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				equipletAgent.doDelete();
 			}
 		}

@@ -143,11 +143,9 @@ public class CanPerformProductionStep extends ReceiveBehaviour implements Parent
 					disconfirmReply.setPerformative(ACLMessage.DISCONFIRM);
 					disconfirmReply.setOntology("CanPerformProductionStep");
 					getAgent().send(disconfirmReply);
-					Logger.log(LogLevel.DEBUG, "%s sending step availability (%b)%n", getAgent().getLocalName(),
-							disconfirmReply.getPerformative() == ACLMessage.CONFIRM);
 				}
 			} catch(UnreadableException | InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		}
 	}

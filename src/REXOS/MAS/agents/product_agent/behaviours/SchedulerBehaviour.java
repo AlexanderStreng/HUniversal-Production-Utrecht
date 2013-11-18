@@ -118,8 +118,6 @@ public class SchedulerBehaviour extends Behaviour {
 			this._bc.handleCallback(BehaviourStatus.RUNNING, null);
 
 			for (ProductionStep ps : psa) {
-				Logger.log(LogLevel.DEBUG, "Trying to schedule a new step (id "
-						+ ps.getId() + "). status: " + ps.getStatus());
 
 				if ((ps.getStatus() == StepStatusCode.EVALUATING || ps
 						.getStatus() == StepStatusCode.RESCHEDULE)
@@ -129,13 +127,13 @@ public class SchedulerBehaviour extends Behaviour {
 
 					if (equiplets != null && equiplets.size() != 0) 
 					{
-						Logger.log(LogLevel.INFORMATION, "Added scheduler");
+						
 						Scheduler(equiplets.keySet(), ps);
 						_schedulersStarted++;
 					} 
 					else 
 					{
-						Logger.log(LogLevel.ERROR, "Equiplets are null ( or size is 0 )");
+						
 						_isError = true;
 					}
 				}
@@ -143,7 +141,7 @@ public class SchedulerBehaviour extends Behaviour {
 		} 
 		catch (Exception e) 
 		{
-			Logger.log(LogLevel.ERROR, "", e.toString());
+			
 		}
 	}
 
@@ -154,7 +152,7 @@ public class SchedulerBehaviour extends Behaviour {
 	public void action() {
 
 		if (_schedulersStarted == _schedulersCompleted && _isError == false) {
-			Logger.log(LogLevel.INFORMATION, "Setting scheduler to complete");
+			
 			this._bc.handleCallback(BehaviourStatus.COMPLETED, null);
 			_isCompleted = true;
 		} else if (_isError) {
@@ -208,14 +206,14 @@ public class SchedulerBehaviour extends Behaviour {
 			long firstTimeSlot = dbObject.getLong("firstTimeSlot");
 			int timeSlotLength = dbObject.getInt("timeSlotLength");
 	
-			Logger.log(LogLevel.INFORMATION, "First Timeslot: " + firstTimeSlot + " timeslotLength: " + timeSlotLength);
+			
 			
 			ArrayList<FreeTimeSlot> freetimeslots = new ArrayList<FreeTimeSlot>();
 			DbData dbData = null;
 			// Change this
 			for (AID aid : equipletlist) 
 			{
-				Logger.log(LogLevel.INFORMATION, "Trying to reach equiplet: " + aid.getLocalName() + "");
+				
 				
 				bbc = new BlackboardClient(Configuration.getProperty(ConfigurationFiles.MONGO_DB_PROPERTIES, "collectiveDbIp"));
 				bbc.setDatabase(Configuration.getProperty(ConfigurationFiles.MONGO_DB_PROPERTIES, "collectiveDbName"));
@@ -231,7 +229,7 @@ public class SchedulerBehaviour extends Behaviour {
 				} 
 				else 
 				{
-					Logger.log(LogLevel.ERROR, "There doesnt seem to be any equiplet available..");
+					
 				}
 	
 				ArrayList<Schedule> schedules = new ArrayList<Schedule>();
@@ -258,14 +256,14 @@ public class SchedulerBehaviour extends Behaviour {
 				
 				List<DBObject> plannedSteps = bbc.findDocuments(findquery);
 				
-				Logger.log(LogLevel.INFORMATION, "Planned steps count: " + plannedSteps.size() + " requiredSlots: " + requiredTimeSlots);
+				
 				
 				for (int i = 0; i < plannedSteps.size(); i++) 
 				{
 					long startTime = ((BasicDBObject) plannedSteps.get(i).get("scheduleData")).getLong("startTime");
 					int duration = ((BasicDBObject) plannedSteps.get(i).get("scheduleData")).getInt("duration");
 					schedules.add(new Schedule(startTime, duration, aid));
-					Logger.log(LogLevel.NOTIFICATION, "@ SchedulerBehaviour duration ... : " + duration);
+					
 				}
 	
 				// check within every schedule of the 'schedules' array for free
@@ -287,7 +285,7 @@ public class SchedulerBehaviour extends Behaviour {
 						{
 							Schedule lastSchedule = schedules.get(index);
 							freetimeslots.add(new FreeTimeSlot(lastSchedule.getDeadline(), requiredTimeSlots * timeSlotLength, aid));
-							Logger.log(LogLevel.INFORMATION, "Adding new timeslot to freetimeslot start: " + lastSchedule.getDeadline() + " timeslots: " + requiredTimeSlots);
+							
 						}
 					}
 				} 
@@ -295,8 +293,6 @@ public class SchedulerBehaviour extends Behaviour {
 				{
 					freetimeslots.add(new FreeTimeSlot((System.currentTimeMillis() - firstTimeSlot) / timeSlotLength + (1000 / timeSlotLength),
 							requiredTimeSlots, aid));
-					Logger.log(LogLevel.INFORMATION, "Adding new timeslot to freetimeslot start: " + ( (System.currentTimeMillis() - firstTimeSlot) / timeSlotLength + (1000 / timeSlotLength) )+ " timeslots: " + requiredTimeSlots + 
-							" length: " + requiredTimeSlots);
 				}
 			}
 			
@@ -313,7 +309,7 @@ public class SchedulerBehaviour extends Behaviour {
 					} 
 					else 
 					{
-						Logger.log(LogLevel.ERROR, "FreeTimeSlotEq != null");
+						
 					}
 				}
 			}
@@ -343,9 +339,9 @@ public class SchedulerBehaviour extends Behaviour {
 
 		} catch (InvalidDBNamespaceException
 				| GeneralMongoException e) {
-			Logger.log(LogLevel.ERROR, "Database exception at scheduling", e);
+			
 		} catch (IOException e1){
-			Logger.log(LogLevel.ERROR, "Message content exception at scheduling", e1);
+			
 		}
 	}
 

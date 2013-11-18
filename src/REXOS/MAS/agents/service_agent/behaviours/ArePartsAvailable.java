@@ -129,7 +129,7 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(productStep);
 			} catch (IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		}
 		responseMessage.setOntology("ArePartsAvailable");
@@ -148,7 +148,7 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 	public void handle(ACLMessage message) {
 		if(message != null) {
 			try {
-				Logger.log(LogLevel.DEBUG, "%s ArePartsAvailableResponse%n", serviceAgent.getLocalName());
+				
 				
 				BlackboardClient productStepBBClient = serviceAgent.getProductStepBBClient();
 				if(message.getPerformative() == ACLMessage.CONFIRM) {
@@ -169,12 +169,12 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 									.append("statusData", new BasicDBObject("reason", "missing productStep"))));
 				}
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				serviceAgent.doDelete();
 			}
 			serviceAgent.removeBehaviour(this);
 		} else {
-			Logger.log(LogLevel.WARNING, "" + serviceAgent.getName() + " - ArePartsAvailableResponse timeout!");
+			
 			serviceAgent.doDelete();
 		}
 	}

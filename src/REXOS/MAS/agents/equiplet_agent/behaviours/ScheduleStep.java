@@ -117,7 +117,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 		{
 			// Gets the timeslot out of the message content.
 			long start = (Long) message.getContentObject();
-			Logger.log(LogLevel.INFORMATION, "Equiplet agent received schedulestep request. Trying to schedule ts: %d%n", start);
+			
 
 			// Gets the scheduledata out of the productstep.
 			ObjectId productStepId = equipletAgent.getRelatedObjectId(message.getConversationId());
@@ -126,7 +126,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 					new ScheduleData((BasicDBObject) (productStepsBlackboard.findDocumentById(productStepId)).get("scheduleData"));
 			
 			long end = start + scheduleData.getDuration();
-			Logger.log(LogLevel.DEBUG, "start: " + start + " duration: " + scheduleData.getDuration() + " end: " + end);
+			
 
 			// Gets planned steps
 			List<DBObject> plannedSteps =
@@ -134,7 +134,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 
 			boolean fitsInSchedule = true;
 
-			Logger.log(LogLevel.DEBUG, "I currently have " + plannedSteps.size() + " planned steps.");
+			
 			// check if other steps not are scheduled.
 			for(DBObject plannedStep : plannedSteps) {
 				ProductStep productStep = new ProductStep((BasicDBObject) plannedStep);
@@ -145,29 +145,14 @@ public class ScheduleStep extends ReceiveBehaviour {
 
 				if(start >= scheduledStepStart && start <= scheduledStepEnd) 
 				{
-					Logger.log(LogLevel.ERROR, "FitInSchedule is false!\nstart: " + start + " scheduledStepStart: " + scheduledStepStart +
-							"\nend: " + end + " scheduledStepEnd: " +  scheduledStepEnd + " \nend - start: " + (end - start) + 
-							"\nscheduledEnd - scheduledStart " + (scheduledStepEnd - scheduledStepStart) +
-							"\nend - scheduledStepEnd: " + (end - scheduledStepEnd) + 
-							"\nstart - scheduledStepStart: " + (start - scheduledStepStart));
 					fitsInSchedule = false;
 				} 
 				else if(end >= scheduledStepStart && end <= scheduledStepEnd) 
 				{
-					Logger.log(LogLevel.ERROR, "FitInSchedule is false!\nstart: " + start + " scheduledStepStart: " + scheduledStepStart +
-							"\nend: " + end + " scheduledStepEnd: " +  scheduledStepEnd + " \nend - start: " + (end - start) + 
-							"\nscheduledEnd - scheduledStart " + (scheduledStepEnd - scheduledStepStart) +
-							"\nend - scheduledStepEnd: " + (end - scheduledStepEnd) + 
-							"\nstart - scheduledStepStart: " + (start - scheduledStepStart));
 					fitsInSchedule = false;
 				} 
 				else if(start <= scheduledStepStart && end >= scheduledStepEnd) 
 				{
-					Logger.log(LogLevel.ERROR, "FitInSchedule is false!\nstart: " + start + " scheduledStepStart: " + scheduledStepStart +
-							"\nend: " + end + " scheduledStepEnd: " +  scheduledStepEnd + " \nend - start: " + (end - start) + 
-							"\nscheduledEnd - scheduledStart " + (scheduledStepEnd - scheduledStepStart) +
-							"\nend - scheduledStepEnd: " + (end - scheduledStepEnd) + 
-							"\nstart - scheduledStepStart: " + (start - scheduledStepStart));
 					fitsInSchedule = false;
 				}
 				
@@ -184,11 +169,11 @@ public class ScheduleStep extends ReceiveBehaviour {
 				scheduleMessage.setContentObject(productStepId);
 				scheduleMessage.setConversationId(message.getConversationId());
 				equipletAgent.send(scheduleMessage);
-				Logger.log(LogLevel.DEBUG, "You fit in my schedule, msg accepted send.");
+				
 			}
 			else 
 			{
-				Logger.log(LogLevel.ERROR, "ScheduleStep disconfirm");
+				
 				ACLMessage reply = message.createReply();
 				reply.setPerformative(ACLMessage.DISCONFIRM);
 				myAgent.send(reply);
@@ -196,7 +181,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 		}
 		catch(IOException | InvalidDBNamespaceException | GeneralMongoException | UnreadableException e) 
 		{
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			myAgent.doDelete();
 		}
 	}

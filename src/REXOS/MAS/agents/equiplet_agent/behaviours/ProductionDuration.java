@@ -97,13 +97,11 @@ public class ProductionDuration extends ReceiveBehaviour implements ParentBehavi
 	 */
 	@Override
 	public void handle(ACLMessage message) {
-		Logger.log(LogLevel.DEBUG, "%s received message from %s%n", equipletAgent.getLocalName(), message.getSender().getLocalName(),
-				message.getOntology());
 		try {
 			// gets the productstepId and sends it to the service agent with the ontology GetProductionStepDuration.
 			ObjectId productStepId = equipletAgent.getRelatedObjectId(message.getConversationId());
 			if(productStepId == null) {
-				Logger.log(LogLevel.DEBUG, "Conversation id not known");
+				
 				ACLMessage responseMessage = message.createReply();
 				responseMessage.setPerformative(ACLMessage.DISCONFIRM);
 				//TODO: why change the ontology ?
@@ -125,7 +123,7 @@ public class ProductionDuration extends ReceiveBehaviour implements ParentBehavi
 		//		myAgent.send(responseMessage);
 			}
 		} catch(Exception e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			equipletAgent.doDelete();
 		}
 	}
@@ -145,7 +143,7 @@ public class ProductionDuration extends ReceiveBehaviour implements ParentBehavi
 		try {
 			responseMessage.setContentObject(new Long(schedule.getDuration()));
 		} catch (IOException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 		}
 		equipletAgent.send(responseMessage);
 		

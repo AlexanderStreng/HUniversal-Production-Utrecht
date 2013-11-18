@@ -162,7 +162,7 @@ public class PickAndPlaceService extends Service {
 		Set<Part> parts = partParameters.keySet();
 		Part supplyCrate = null, productCrate = null;
 		for (Part part : parts) {
-			Logger.log(LogLevel.DEBUG, "parts in partParameter: " + part);
+			
 			if (part.getId() == 100) {
 				supplyCrate = part;
 			} else if (part.getId() == 101) {
@@ -241,11 +241,6 @@ public class PickAndPlaceService extends Service {
 			}
 
 			newParameters.put("height", oldParameters.getDouble("height"));
-			
-			Logger.log(
-					LogLevel.DEBUG,
-					"After updating service step parameters: "
-							+ newParameters.keySet());
 
 			ss.setParameters(newParameters);
 		}

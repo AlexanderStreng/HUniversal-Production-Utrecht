@@ -115,12 +115,12 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 	public void handle(ACLMessage message) {
 		if(message != null) {
 			try {
-				Logger.log(LogLevel.DEBUG, "%s GetPartsInfo%n", logisticsAgent.getLocalName());
+				
 				Part[] parts = (Part[]) message.getContentObject();
 				HashMap<Part, Position> partParameters = new HashMap<Part, Position>();
 				
 				for(Part part : parts) {
-					Logger.log(LogLevel.DEBUG, "PartNo: " + part.getType());
+					
 					switch(part.getType()) {
 					case 1: // Red ball
 						// Grab a ball
@@ -148,7 +148,7 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 				reply.setContentObject(partParameters);
 				logisticsAgent.send(reply);
 			} catch (UnreadableException | IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				logisticsAgent.doDelete();
 			}
 		} else {

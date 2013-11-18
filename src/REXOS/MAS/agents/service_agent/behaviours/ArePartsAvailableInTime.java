@@ -123,7 +123,7 @@ public class ArePartsAvailableInTime extends ReceiveBehaviour {
 	@Override
 	public void onStart(){
 
-		Logger.log(LogLevel.DEBUG, "Sent message arepartsavailableintime SERVICEAGENT!!");
+		
 		ACLMessage responseMessage = new ACLMessage(ACLMessage.QUERY_IF);
 		responseMessage.addReceiver(serviceAgent.getLogisticsAID());
 		responseMessage.setConversationId(conversationId);
@@ -131,7 +131,7 @@ public class ArePartsAvailableInTime extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(productStep.getInputParts());
 			} catch (IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		}
 		responseMessage.setOntology("ArePartsAvailableInTime");
@@ -149,7 +149,7 @@ public class ArePartsAvailableInTime extends ReceiveBehaviour {
 	public void handle(ACLMessage message) {
 		if(message != null) {
 			try {
-				Logger.log(LogLevel.DEBUG, "%s ArePartsAvailableInTimeResponse%n", serviceAgent.getLocalName());
+				
 				
 				BlackboardClient productStepBBClient = serviceAgent.getProductStepBBClient();
 				ObjectId productStepId = serviceAgent.getProductStepIdForConvId(message.getConversationId());
@@ -173,12 +173,12 @@ public class ArePartsAvailableInTime extends ReceiveBehaviour {
 											"productStep cannot be delivered on time"))));
 				}
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				serviceAgent.doDelete();
 			}
 			serviceAgent.removeBehaviour(this);
 		} else {
-			Logger.log(LogLevel.WARNING, "" + serviceAgent.getName() + " - ArePartsAvailableInTimeReponse timeout!");
+			
 			serviceAgent.doDelete();
 		}
 	}

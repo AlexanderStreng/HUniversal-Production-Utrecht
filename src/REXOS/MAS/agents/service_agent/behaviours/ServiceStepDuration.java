@@ -125,7 +125,7 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(objectId);
 			} catch (IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		}
 		responseMessage.setOntology("ServiceStepDuration");
@@ -153,7 +153,7 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 					serviceStep.fromBasicDBObject((BasicDBObject) serviceAgent.getServiceStepBBClient().findDocumentById(nextStep));
 					duration += serviceStep.getScheduleData().getDuration();
 					nextStep = serviceStep.getNextServiceStep();
-					Logger.log(LogLevel.NOTIFICATION, "@ ServiceStepDuration duration .. : " + duration);
+					
 				}
 
 				
@@ -164,7 +164,7 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 				ScheduleData scheduleData = productStep.getScheduleData();
 				scheduleData.setDuration(duration);
 
-				Logger.log(LogLevel.DEBUG, "Saving duration of %d in prod. step %s%n", duration, productStepId);
+				
 				serviceAgent.getProductStepBBClient().updateDocuments(new BasicDBObject("_id", productStepId),
 						new BasicDBObject("$set", new BasicDBObject("scheduleData", scheduleData.toBasicDBObject())));
 
@@ -172,10 +172,10 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 				serviceAgent.removeBehaviour(this);
 				
 			} catch(InvalidDBNamespaceException | GeneralMongoException | UnreadableException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		} else {
-			Logger.log(LogLevel.DEBUG, "" + serviceAgent.getName() + " - GetServiceStepDurationResponse timeout!");
+			
 			serviceAgent.doDelete();
 		}
 	}

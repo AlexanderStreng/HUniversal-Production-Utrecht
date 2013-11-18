@@ -112,18 +112,12 @@ public class ProductStepDuration extends ReceiveBehaviour implements ParentBehav
 					new ProductStep((BasicDBObject) serviceAgent.getProductStepBBClient().findDocumentById(productStepId));
 			int productStepType = productStep.getType();
 
-			Logger.log(LogLevel.DEBUG, "%s got message GetProductStepDuration for step type %s%n", serviceAgent.getLocalName(),
-					productStepType);
-
 			Service service = serviceAgent.getServiceForConvId(message.getConversationId());
 			BasicDBObject parameters = productStep.getParameters();
 			ServiceStep[] serviceSteps = service.getServiceSteps(productStepType, parameters);
 			for(ServiceStep serviceStep : serviceSteps) {
 				serviceStep.setProductStepId(productStepId);
 			}
-
-			Logger.log(LogLevel.DEBUG, "%s asking %s for duration of %d steps%n", serviceAgent.getLocalName(), serviceAgent.getHardwareAgentAID()
-					.getLocalName(), serviceSteps.length);
 
 			ObjectId serviceStepId = null;
 			BlackboardClient serviceStepBB = serviceAgent.getServiceStepBBClient();
@@ -141,7 +135,7 @@ public class ProductStepDuration extends ReceiveBehaviour implements ParentBehav
 	//		askMessage.setContentObject(serviceStepId);
 	//		serviceAgent.send(askMessage);
 		} catch(UnreadableException | InvalidDBNamespaceException | GeneralMongoException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			serviceAgent.doDelete();
 		}
 	}

@@ -108,7 +108,7 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 	public void handle(ACLMessage message) {
 		if(message != null) {
 			try {
-				Logger.log(LogLevel.DEBUG, "%s scheduling step with Logistics%n", serviceAgent.getLocalName());
+				
 
 				ProductStep productStep =
 						new ProductStep((BasicDBObject) serviceAgent.getProductStepBBClient().findDocumentById(
@@ -124,7 +124,7 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 			//	sendMsg.setContentObject(productStep);
 			//	agent.send(sendMsg);
 			} catch(InvalidDBNamespaceException | GeneralMongoException | UnreadableException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				serviceAgent.doDelete();
 			}
 		}
@@ -142,7 +142,7 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 			
 		case "ArePartsAvailableInTime":
 			ProductStep test = (ProductStep) arguments.getArgument("productStep");
-			Logger.log(LogLevel.DEBUG, "Productstep: " + test);
+			
 			serviceAgent.addBehaviour(new PartsInfo(serviceAgent, this, result.getConversationId(),
 					(ProductStep) arguments.getArgument("productStep")));
 			break;
@@ -158,7 +158,7 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 			try {
 				informMsg.setContentObject((Serializable) arguments.getArgument("stepId"));
 			} catch (IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 			serviceAgent.send(informMsg);
 			break;

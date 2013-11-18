@@ -128,7 +128,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 					equipletAgent.getCollectiveBBClient().insertDocument(directoryEntry.toBasicDBObject());
 				}
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				equipletAgent.doDelete();
 			}
 
@@ -145,7 +145,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 			equipletAgent.addBehaviour(new StartStep(equipletAgent));
 			
 		} else {
-			Logger.log(LogLevel.ERROR, "timeout!");
+			
 			equipletAgent.doDelete();
 		}
 	}
@@ -158,7 +158,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 			EquipletStateEntry state = new EquipletStateEntry((BasicDBObject) dbObject);
 			switch(state.getEquipletState()) {
 				case STANDBY:
-					Logger.log(LogLevel.DEBUG, "EquipletState changed to %s%n", state.getEquipletState().name());
+					
 
 					EquipletDirectoryEntry directoryEntry =
 							new EquipletDirectoryEntry(equipletAgent.getAID(), equipletAgent.getCapabilities(),
@@ -168,11 +168,11 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 					equipletAgent.getStateBBClient().unsubscribe(stateUpdateSubscription);
 					break;
 				default:
-					Logger.log(LogLevel.DEBUG, "EquipletState changed to %s%n", state.getEquipletState().name());
+					
 					break;
 			}
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			// Cannot add myself on the collective BB, so remove the agent since it cannot be found by product agents 
 			equipletAgent.doDelete();
 		}

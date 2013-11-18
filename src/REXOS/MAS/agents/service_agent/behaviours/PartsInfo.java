@@ -140,7 +140,7 @@ public class PartsInfo extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(productStep.getInputParts());
 			} catch (IOException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 			}
 		}
 		responseMessage.setOntology("PartsInfo");
@@ -187,7 +187,7 @@ public class PartsInfo extends ReceiveBehaviour {
 				productStepBBClient.updateDocuments(new BasicDBObject("_id", productStepId), new BasicDBObject("$set",
 						new BasicDBObject("inputParts", partList)));
 
-				Logger.log(LogLevel.DEBUG, "%s got partsInfo: %s%n", serviceAgent.getLocalName(), partParameters.toString());
+				
 
 				for(Entry<Part, Position> e : partParameters.entrySet()) {
 					if(e.getValue() == null) {
@@ -230,12 +230,12 @@ public class PartsInfo extends ReceiveBehaviour {
 				productStepBBClient.updateDocuments(new BasicDBObject("_id", productStepId), new BasicDBObject("$set",
 						new BasicDBObject("status", StepStatusCode.PLANNED.name())));
 			} catch(UnreadableException | InvalidDBNamespaceException | GeneralMongoException e) {
-				Logger.log(LogLevel.ERROR, "", e);
+				
 				serviceAgent.doDelete();
 			}
 			serviceAgent.removeBehaviour(this);
 		} else {
-			Logger.log(LogLevel.DEBUG, "" + serviceAgent.getName() + " - GetPartsInfoResponse timeout!");
+			
 			serviceAgent.doDelete();
 		}
 	}

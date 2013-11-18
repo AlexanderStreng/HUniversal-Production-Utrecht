@@ -271,7 +271,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 		 	productStepsName = Configuration.getProperty(ConfigurationFiles.EQUIPLET_DB_PROPERTIES, "ProductStepsBlackBoardName", getAID().getLocalName());
 		 	planningName = Configuration.getProperty(ConfigurationFiles.EQUIPLET_DB_PROPERTIES, "PlanningBlackBoardName", getAID().getLocalName());
 		 	
-			Logger.log(LogLevel.NOTIFICATION, "", this.getAID().getLocalName() + " spawned as an equiplet agent.");
+			
 			
 			communicationTable = new HashMap<String, ObjectId>();
 			behaviours = new ArrayList<Behaviour>();
@@ -285,7 +285,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			for(Row step : steps) {
 				capabilities.add((int) step.get("id"));
 			}
-			Logger.log(LogLevel.DEBUG, "%s %s%n", capabilities, equipletDbName);
+			
 
 			dbData = new DbData(equipletDbIp, equipletDbPort, equipletDbName);
 
@@ -344,12 +344,12 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			collectiveBBClient.setCollection(equipletDirectoryName);
 		} catch(GeneralMongoException | InvalidDBNamespaceException | UnknownHostException | StaleProxyException
 				| KnowledgeException | KeyNotFoundException  e) {
-			Logger.log(LogLevel.CRITICAL, "Could not spawn Equiplet", e);
+			
 			//delete this agent and all opened blackboards / started agents
 			doDelete();
 		} catch(Exception e){
 			e.printStackTrace();
-			Logger.log(LogLevel.ERROR, "Caught general exception in EQ setup(): " + e);
+			
 		}
 
 		// starts the behaviour for receiving message when the Service Agent dies.
@@ -386,7 +386,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			productStepBBClient.removeDocuments(new BasicDBObject());
 			productStepBBClient.unsubscribe(statusSubscription);
 		} catch(InvalidDBNamespaceException | GeneralMongoException | IOException e) {
-			Logger.log(LogLevel.ERROR, "Could not clear blackboards for " + this.getAID().getLocalName(), e);
+			
 		}
 
 		ACLMessage deadMessage = new ACLMessage(ACLMessage.FAILURE);
@@ -428,7 +428,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 					responseMessage.addReceiver(productStep.getProductAgentId());
 					responseMessage.setConversationId(conversationId);
 
-					Logger.log(LogLevel.INFORMATION, "status update: " + productStep.getStatus().toString());
+					
 					switch(productStep.getStatus()) {
 					// Depending on the changed status fills in the responseMessage and sends it to the product agent.
 						case PLANNED:
@@ -453,7 +453,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 							} catch(IOException e) {
 								responseMessage.setPerformative(ACLMessage.DISCONFIRM);
 								responseMessage.setContent("An error occured in the planning/please reschedule");
-								Logger.log(LogLevel.ERROR, "Could not serialize scheduledata-starttime", e);
+								
 							}
 							break;
 						case FAILED:
@@ -489,15 +489,13 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 						default:
 							break;
 					}
-					Logger.log(LogLevel.DEBUG, "sending message %s%n",
-							ACLMessage.getPerformative(responseMessage.getPerformative()));
 					send(responseMessage);
 					break;
 				case "equipletState":
 					EquipletStateEntry stateEntry =
 							new EquipletStateEntry((BasicDBObject) stateBBClient.findDocumentById(entry
 									.getTargetObjectId()));
-					Logger.log(LogLevel.DEBUG, "mode changed to %s%n", stateEntry.getEquipletMode());
+					
 					EquipletMode mode = stateEntry.getEquipletMode();
 					switch(mode) {
 					// TODO handle error stuff
@@ -515,12 +513,12 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 					}
 					break;
 				default:
-					Logger.log(LogLevel.WARNING, "onMessage Unknown database");
+					
 					break;
 			}
 		} catch(GeneralMongoException | InvalidDBNamespaceException | IOException e) {
 			// TODO handle error
-			Logger.log(LogLevel.ERROR, "", e);
+			
 		}
 	}
 

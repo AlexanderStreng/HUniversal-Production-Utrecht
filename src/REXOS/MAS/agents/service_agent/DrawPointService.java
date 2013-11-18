@@ -94,7 +94,7 @@ public class DrawPointService extends Service {
 		BasicDBObject serviceStepParameters = new BasicDBObject();
 		serviceStepParameters.put("position", point.toBasicDBObject());
 		
-		Logger.log(LogLevel.DEBUG, "serviceStepParameters: " + serviceStepParameters);
+		
 
 		return new ServiceStep[]
 		{
@@ -111,7 +111,7 @@ public class DrawPointService extends Service {
 		Set<Part> parts = partParameters.keySet();
 		Part whitePaper = null;
 		for (Part part : parts){
-			Logger.log(LogLevel.DEBUG, "parts in partParameter: " + part);
+			
 			if (part.getId() == 102){
 				whitePaper = part;
 			}

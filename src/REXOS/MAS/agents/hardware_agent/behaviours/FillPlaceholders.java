@@ -119,11 +119,9 @@ public class FillPlaceholders extends ReceiveBehaviour {
 	public void handle(ACLMessage message) {
 		try {
 			ObjectId serviceStepId = (ObjectId) message.getContentObject();
-			Logger.log(LogLevel.DEBUG, "%s received message from %s%n", myAgent.getLocalName(), message.getSender().getLocalName(),
-					message.getOntology());
 			FillStepPlaceholders(serviceStepId);
 		} catch(UnreadableException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			myAgent.doDelete();
 		}
 	}
@@ -158,7 +156,7 @@ public class FillPlaceholders extends ReceiveBehaviour {
 
 			// Fill the placeholders
 			equipletSteps = module.fillPlaceHolders(equipletSteps, serviceStep.getParameters());
-			Logger.log(LogLevel.DEBUG, "Saving updated instructionData of %d equipletSteps%n", equipletSteps.length);
+			
 			
 			for(EquipletStep step : equipletSteps)
 			{
@@ -174,7 +172,7 @@ public class FillPlaceholders extends ReceiveBehaviour {
 		}
 		catch(InvalidDBNamespaceException | GeneralMongoException e) 
 		{
-			Logger.log(LogLevel.ERROR, "", e);
+			
 			hardwareAgent.doDelete();
 		}
 	}

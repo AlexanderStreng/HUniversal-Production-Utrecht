@@ -143,15 +143,10 @@ public class InformerBehaviour extends Behaviour {
 							_totalSubinformers++;
 						}
 					} else {
-						Logger.log(LogLevel.ERROR, "Can't find any equiplets that can execute this production step. Capability: "
-								+ productionStep.getCapability());
 					}
 				} else {
-					Logger.log(LogLevel.ERROR, "Can't find any equiplets that can execute this production step. Capability: "
-							+ productionStep.getCapability());
 				}
-			} else {
-				Logger.log(LogLevel.ERROR, "Can't process a productionStep which isn't in the evaluating state");
+			} else {	
 			}
 		}
 
@@ -191,7 +186,7 @@ public class InformerBehaviour extends Behaviour {
 			}
 			//block();
 		} catch (NullPointerException e) {
-			Logger.log(LogLevel.ERROR, "", e);
+			
 		}
 	}
 	
@@ -224,12 +219,12 @@ public class InformerBehaviour extends Behaviour {
 	{
 		if (bs == BehaviourStatus.COMPLETED) 
 		{
-			Logger.log(LogLevel.DEBUG, "Setting time slots for equiplet: " + subBehaviour.getTargetEquiplet() + " duration: " + subBehaviour.getTimeslotDuration());
+			
 			_prodEQmap.setTimeSlotsForEquiplet(subBehaviour.getProductionStepId(), subBehaviour.getTargetEquiplet(), subBehaviour.getTimeslotDuration());
 		} 
 		else 
 		{
-			Logger.log(LogLevel.ERROR, "callbackSubInformerBehaviour ended with error!");
+			
 		}
 		
 		_parBehaviour.removeSubBehaviour(subBehaviour);

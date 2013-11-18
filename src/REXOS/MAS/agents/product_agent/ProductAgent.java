@@ -96,12 +96,8 @@ public class ProductAgent extends Agent {
 			// Create the Overview Behaviour and start it
 			_overviewBehaviour = new OverviewBehaviour(this);
 			addBehaviour(_overviewBehaviour);
-			Logger.log(LogLevel.NOTIFICATION, "" + this.getAID().getLocalName() + " spawned as an product agent.");
+			
 		} catch (IllegalArgumentException e) {
-		Logger.log(
-			LogLevel.ERROR,
-			"No arguments found. ProductAgent needs atleast one ProductAgentPropeties as argument",
-			e );
 		}
 	}
 
@@ -189,7 +185,7 @@ public class ProductAgent extends Agent {
 
 					this._properties = pap;
 				}catch(NullPointerException | IllegalArgumentException e){
-					Logger.log(LogLevel.ERROR, "Error when parsing the arguments");
+					
 					e.printStackTrace();
 				}
 			} else if (args[0].getClass() == ProductAgentProperties.class) {
