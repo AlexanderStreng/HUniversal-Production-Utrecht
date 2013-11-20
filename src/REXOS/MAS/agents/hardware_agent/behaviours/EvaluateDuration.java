@@ -110,7 +110,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		this.hardwareAgent = hardwareAgent;
 		this.moduleFactory = moduleFactory;
 		
-		Logger.log(LogLevel.INFORMATION, "EvaluateDuration behaviour started.");
+		Logger.log(LogLevel.DEBUG, "EvaluateDuration behaviour started.");
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 			reply.setOntology("ServiceStepDuration");
 			hardwareAgent.send(reply);
 		} catch(UnreadableException | IOException e) {
-			e.printStackTrace();
+			Logger.log(LogLevel.ERROR, "HardwareAgent deleted.", e);
 			hardwareAgent.doDelete();
 		}
 	}
@@ -194,7 +194,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		} 
 		catch(InvalidDBNamespaceException | GeneralMongoException e) 
 		{
-			
+			Logger.log(LogLevel.ERROR, "HardwareAgent deleted.", e);
 			hardwareAgent.doDelete();
 		}
 	}

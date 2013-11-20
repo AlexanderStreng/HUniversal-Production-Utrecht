@@ -82,7 +82,7 @@ public class GripperModule extends Module {
 	 * 		This has only been added to be able to add a log line
 	 */
 	public GripperModule(){
-		Logger.log(LogLevel.INFORMATION, "GripperModule created.");
+		Logger.log(LogLevel.DEBUG, "GripperModule created.");
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class GripperModule extends Module {
 			crateHeight = parameters.getDouble("height");
 		}
 		
-		Logger.log(LogLevel.INFORMATION, "Filling placeholders.");
+		Logger.log(LogLevel.DEBUG, "Filling placeholders.");
 		
 		double crateDimension = 45.75;
         double crateSlotDimension = 11;

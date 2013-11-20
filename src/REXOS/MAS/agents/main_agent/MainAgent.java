@@ -85,7 +85,7 @@ public class MainAgent extends Agent {
 	protected void setup() {
 		try {
 			Logger.eraseLogFile();			
-			Logger.log(LogLevel.INFORMATION, "MainAgent created.");
+			Logger.log(LogLevel.DEBUG, "MainAgent created.");
 			
 			/**
 			 * Make a new logistics agent

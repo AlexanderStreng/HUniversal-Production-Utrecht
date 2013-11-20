@@ -86,7 +86,7 @@ public class ServiceAgentDied extends ReceiveBehaviour {
 		super(hardwareAgent, MESSAGE_TEMPLATE);
 		this.hardwareAgent = hardwareAgent;
 		
-		Logger.log(LogLevel.INFORMATION, "ServiceAgentDied behaviour started.");
+		Logger.log(LogLevel.DEBUG, "ServiceAgentDied behaviour started.");
 	}
 
 	/**
@@ -99,6 +99,7 @@ public class ServiceAgentDied extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		//remove the hardwareAgent
+		Logger.log(LogLevel.WARNING, "HardwareAgent deleted.");
 		hardwareAgent.doDelete();
 	}
 }

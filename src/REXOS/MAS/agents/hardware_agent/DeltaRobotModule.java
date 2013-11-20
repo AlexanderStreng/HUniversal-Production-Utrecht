@@ -83,7 +83,7 @@ public class DeltaRobotModule extends Module {
 	 * 		This has only been added to be able to add a log line
 	 */
 	public DeltaRobotModule(){
-		Logger.log(LogLevel.INFORMATION, "DeltaRobotModule created.");
+		Logger.log(LogLevel.DEBUG, "DeltaRobotModule created.");
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class DeltaRobotModule extends Module {
 	public EquipletStep[] fillPlaceHolders(EquipletStep[] steps, BasicDBObject parameters) {
 		// get the new position parameters from the parameters
 		double extraSize = 15;	//temp value
-		Logger.log(LogLevel.INFORMATION, "Filling placeholders.");
+		Logger.log(LogLevel.DEBUG, "Filling placeholders.");
 		
 		if(parameters.containsField("extraSize"))
 		{
@@ -245,7 +245,7 @@ public class DeltaRobotModule extends Module {
 	 */
 	private EquipletStep moveToSafePlane(BasicDBObject parameters) {
 		// get the extraSize from the parameters(e.g. Size of the module on this module)
-		Logger.log(LogLevel.DEBUG, "Moving to safe movement plane.");
+		Logger.log(LogLevel.INFORMATION, "Moving to safe movement plane.");
 		
 		double extraSize = 0;
 		if(parameters.containsField("extraSize")) {

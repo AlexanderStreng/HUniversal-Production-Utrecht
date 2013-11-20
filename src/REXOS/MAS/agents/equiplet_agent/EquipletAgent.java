@@ -494,7 +494,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 						default:
 							break;
 					}
-					Logger.log(LogLevel.DEBUG, "Sent message \"%s\" to %s", responseMessage.getOntology(), responseMessage.getAllReceiver().toString());
+					Logger.log(LogLevel.DEBUG, "Sent message \"%s\" to %s", responseMessage.getOntology(), productStep.getProductAgentId().getName());
 					send(responseMessage);
 					break;
 				case "equipletState":

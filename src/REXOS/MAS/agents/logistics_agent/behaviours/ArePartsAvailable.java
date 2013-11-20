@@ -77,7 +77,7 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 		super(logisticsAgent, MESSAGE_TEMPLATE);
 		this.logisticsAgent = logisticsAgent;
 		
-		Logger.log(LogLevel.INFORMATION, "ArePartsAvailable behaviour started.");
+		Logger.log(LogLevel.DEBUG, "ArePartsAvailable behaviour started.");
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 			
 			logisticsAgent.addBehaviour(new ArePartsAvailableInTime(logisticsAgent, message.getConversationId()));
 		} catch (UnreadableException e) {
-			
+			Logger.log(LogLevel.WARNING, "LogisticsAgent deleted.", e);
 			logisticsAgent.doDelete();
 		}
 	}

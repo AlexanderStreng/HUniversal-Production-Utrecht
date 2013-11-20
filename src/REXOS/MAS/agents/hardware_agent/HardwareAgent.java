@@ -186,7 +186,7 @@ public class HardwareAgent extends Agent implements BlackboardSubscriber, Module
 	@Override
 	public void setup() {
 		
-		Logger.log(LogLevel.INFORMATION, "HardwareAgent created.");
+		Logger.log(LogLevel.DEBUG, "HardwareAgent created.");
 		
 		leadingModules = new HashMap<Integer, Integer>();
 

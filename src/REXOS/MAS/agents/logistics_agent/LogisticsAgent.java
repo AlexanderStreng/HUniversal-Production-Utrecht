@@ -68,7 +68,7 @@ public class LogisticsAgent extends Agent {
 	@Override
 	public void setup() {
 		
-		Logger.log(LogLevel.INFORMATION, "LogisticsAgent created.");
+		Logger.log(LogLevel.DEBUG, "LogisticsAgent created.");
 		
 		addBehaviour(new ArePartsAvailable(this));
 		

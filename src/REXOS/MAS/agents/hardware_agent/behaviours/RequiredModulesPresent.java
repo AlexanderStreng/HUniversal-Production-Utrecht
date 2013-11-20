@@ -85,7 +85,7 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 		super(hardwareAgent, MESSAGE_TEMPLATE);
 		this.hardwareAgent = hardwareAgent;
 		
-		Logger.log(LogLevel.INFORMATION, "RequiredModulesPresent behaviour started.");
+		Logger.log(LogLevel.DEBUG, "RequiredModulesPresent behaviour started.");
 	}
 
 	/**
@@ -105,9 +105,10 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 			for(Row row : rows) {
 				availableModules.add((Integer) row.get("groupId"));
 			}
-		} catch(KeyNotFoundException | KnowledgeException ex) {
+		} catch(KeyNotFoundException | KnowledgeException e) {
 			// TODO:(Check this)Return the current (possibly empty) arraylist if reading from the knowledge db fails for
 			// whatever reason.
+			Logger.log(LogLevel.ERROR, "Database connection lost.", e);
 		}
 
 		return availableModules;
@@ -124,6 +125,8 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		
+		Logger.log(LogLevel.DEBUG, "Received message \"%s\"", message.toString());
+		
 		if ( message.getPerformative() == ACLMessage.QUERY_IF){
 			boolean modulesPresent = true;
 			try {
@@ -137,8 +140,9 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 						break;
 					}
 				}
-			} catch(UnreadableException ex) {
+			} catch(UnreadableException e) {
 				modulesPresent = false;
+				Logger.log(LogLevel.ERROR, "No modules could be read.", e);
 			} finally {
 				// send reply; confirm if modules are present, disconfirm if not.
 				ACLMessage reply;
