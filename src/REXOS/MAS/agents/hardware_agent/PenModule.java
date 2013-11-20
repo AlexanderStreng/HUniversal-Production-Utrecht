@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.data_classes.Position;
 
 import com.mongodb.BasicDBObject;
@@ -93,6 +95,14 @@ public class PenModule extends Module {
 	private Module movementModule;
 	
 	/**
+	 * Default constructor for PenModule
+	 * 		This has only been added to be able to add a log line
+	 */
+	public PenModule(){
+		Logger.log(LogLevel.INFORMATION, "PenModule created.");
+	}
+	
+	/**
 	 * @see Module#getEquipletSteps(int, BasicDBObject)
 	 */
 	@Override
@@ -123,55 +133,57 @@ public class PenModule extends Module {
 	@Override
 	public EquipletStep[] fillPlaceHolders(EquipletStep[] steps, BasicDBObject parameters) {
 		// get the new position parameters from the parameters
-				double extraSize = 0;
-				
-				if(parameters.containsField("extra_size"))
-				{
-					extraSize = parameters.getDouble("extra_size");
-				}
-				
-				Position position = new Position((BasicDBObject) parameters.get("position"));
+		
+		Logger.log(LogLevel.INFORMATION, "Filling placeholders.");
+		double extraSize = 0;
+		
+		if(parameters.containsField("extra_size"))
+		{
+			extraSize = parameters.getDouble("extra_size");
+		}
+		
+		Position position = new Position((BasicDBObject) parameters.get("position"));
 
-				// loop over the steps.
-				for(EquipletStep step : steps) {
-					// get the lookUpParameters and the payload and replace the placeholders with real data.
-					InstructionData instructionData = step.getInstructionData();
-					BasicDBObject lookUpParameters = instructionData.getLookUpParameters();
-					BasicDBObject payload = instructionData.getPayload();
-					
-					if(lookUpParameters.containsField("ID")
-							&& lookUpParameters.getString("ID").equals("RELATIVE-TO-PLACEHOLDER")
-							&& position.getRelativeToPart() != null) 
-					{
-						lookUpParameters.put("ID", position.getRelativeToPart().getPartName());
-					}
-					
-					if(payload.containsField("x") && payload.getString("x").equals("X-PLACEHOLDER")) 
-					{
-						payload.put("x", position.getX());
-					}
-					
-					if(payload.containsField("y") && payload.getString("y").equals("Y-PLACEHOLDER")) 
-					{
-						payload.put("y", position.getY());
-					}
-					
-					if(payload.containsField("z") && payload.getString("z").equals("Z-PLACEHOLDER")) 
-					{
-						if(position.getZ() == null)
-						{
-							payload.put("z", 0 + extraSize);
-						}
-						else
-						{
-							payload.put("z", position.getZ() + extraSize);
-						}
-					}
-					
-					payload.put("maxAcceleration", MAX_ACCELERATION);
+		// loop over the steps.
+		for(EquipletStep step : steps) {
+			// get the lookUpParameters and the payload and replace the placeholders with real data.
+			InstructionData instructionData = step.getInstructionData();
+			BasicDBObject lookUpParameters = instructionData.getLookUpParameters();
+			BasicDBObject payload = instructionData.getPayload();
+			
+			if(lookUpParameters.containsField("ID")
+					&& lookUpParameters.getString("ID").equals("RELATIVE-TO-PLACEHOLDER")
+					&& position.getRelativeToPart() != null) 
+			{
+				lookUpParameters.put("ID", position.getRelativeToPart().getPartName());
+			}
+			
+			if(payload.containsField("x") && payload.getString("x").equals("X-PLACEHOLDER")) 
+			{
+				payload.put("x", position.getX());
+			}
+			
+			if(payload.containsField("y") && payload.getString("y").equals("Y-PLACEHOLDER")) 
+			{
+				payload.put("y", position.getY());
+			}
+			
+			if(payload.containsField("z") && payload.getString("z").equals("Z-PLACEHOLDER")) 
+			{
+				if(position.getZ() == null)
+				{
+					payload.put("z", 0 + extraSize);
 				}
-				// returns the filled in steps.
-				return steps;
+				else
+				{
+					payload.put("z", position.getZ() + extraSize);
+				}
+			}
+			
+			payload.put("maxAcceleration", MAX_ACCELERATION);
+		}
+		// returns the filled in steps.
+		return steps;
 	}
 
 	/**

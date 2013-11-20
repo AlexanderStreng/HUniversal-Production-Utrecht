@@ -60,7 +60,6 @@ public class Logger {
 	 **/
 	public static final int loglevelThreshold = LogLevel.DEBUG.getLevel();
 
-
 	/**
 	 * Returns whether or not debugging is enabled.
 	 * @return true if debugging is enabled, false otherwise.
@@ -106,7 +105,6 @@ public class Logger {
 		printToOut(level, msg);
 		printToOut(level, throwable.getStackTrace().toString());
 	}
-
 
 	public static void log(LogLevel level, Throwable throwable) {
 		printToOut(level, throwable.getStackTrace().toString());
@@ -182,8 +180,11 @@ public class Logger {
 					String origin = "";
 					
 					//if this segment of stack equals to "behaviours" you should print an additional part of the path
-					if(stack[stack.length-1].equals("behaviours")){
-						origin = "@" + stack[stack.length-3] + "/" + stack[stack.length-2] + "/" + stack[stack.length-1] + ":";
+					if(stack[stack.length-2].equals("behaviours")){
+						origin = "@" + stack[stack.length-3] + "/" + stack[stack.length-1] + ":";
+					} else if(stack[stack.length-1].equals("Logger")){
+						stack = Thread.currentThread().getStackTrace()[5].getClassName().split("\\.");
+						origin = "@" + stack[stack.length-2] + "/" + stack[stack.length-1] + ":";
 					} else {
 						origin = "@" + stack[stack.length-2] + "/" + stack[stack.length-1] + ":";
 					}				
@@ -200,17 +201,15 @@ public class Logger {
 					writer.write(origin);
 					
 					if(hasThrowable)					writer.write(((Throwable)msg).getStackTrace().toString());
-					else								writer.write(msg.toString());
-
 					//if the message already ends with a line break we shouldn't add a new one
-					//if(!msg.toString().endsWith("\n"))	writer.write("\n");
-					writer.write((msg.toString().replace("%n", "; ")).replace("\n", "; ") + "\n");
+					else								writer.write((msg.toString().replace("%n", "; ")).replace("\n", "; ") + "\n");
 					
 					//close the writer
 					writer.close();
 				} else {
 					//if the file doesn't exist create it
 					logFile.createNewFile();
+					printToFile(level, msg, hasThrowable);
 				}
 			} catch(Exception e) {
 				e.printStackTrace();

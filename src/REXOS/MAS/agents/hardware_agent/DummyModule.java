@@ -47,6 +47,8 @@
  **/
 package agents.hardware_agent;
 
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.data_classes.Position;
 import agents.data_classes.StepStatusCode;
 
@@ -74,6 +76,14 @@ public class DummyModule extends Module {
 	 * 		A static value with the timeslots needed per step.
 	 */
 	private static final int TIMESLOTS_NEEDED_PER_STEP = 6;
+	
+	/**
+	 * Default constructor for DummyModule
+	 * 		This has only been added to be able to add a log line
+	 */
+	public DummyModule(){
+		Logger.log(LogLevel.INFORMATION, "DummyModule created.");
+	}
 	
 	/**
 	 * @see Module#getEquipletSteps(int, BasicDBObject)
@@ -114,6 +124,8 @@ public class DummyModule extends Module {
 	public EquipletStep[] fillPlaceHolders(EquipletStep[] steps, BasicDBObject parameters) {
 		// get the new position parameters from the parameters
 		double extraSize = 15;
+		
+		Logger.log(LogLevel.INFORMATION, "Filling placeholders.");
 		
 		if(parameters.containsField("extra_size"))
 		{
@@ -172,6 +184,9 @@ public class DummyModule extends Module {
 	 */
 	private EquipletStep moveToSafePlane(BasicDBObject parameters) {
 		// get the extraSize from the parameters(e.g. Size of the module on this module)
+		
+		Logger.log(LogLevel.INFORMATION, "Moving to safe movement plane.");
+		
 		double extraSize = 0;
 		if(parameters.containsField("extraSize")) {
 			extraSize = parameters.getDouble("extraSize");
@@ -244,6 +259,9 @@ public class DummyModule extends Module {
 			}
 			payload.put("maxAcceleration", MAX_ACCELERATION);
 			lookUp = "FIND_ID";
+			
+			Logger.log(LogLevel.INFORMATION, "Moving to x:%d, y:%d.", position.getX(), position.getY());
+			
 		} else {
 			// fill the payload parameters
 			payload.put("x", "X-PLACEHOLDER");
@@ -295,6 +313,9 @@ public class DummyModule extends Module {
 			}
 			payload.put("maxAcceleration", MAX_ACCELERATION);
 			lookUp = "FIND_ID";
+			
+			Logger.log(LogLevel.INFORMATION, "Moving to z:%d.", position.getZ());
+			
 		} else {
 			// fill in the payload parameters.
 			payload.put("z", "Z-PLACEHOLDER");

@@ -71,6 +71,8 @@ public class CancelTransportBehaviour extends ReceiveBehaviour {
 	public CancelTransportBehaviour(LogisticsAgent logisticsAgent) {
 		super(logisticsAgent, MESSAGE_TEMPLATE);
 		this.logisticsAgent = logisticsAgent;
+		
+		Logger.log(LogLevel.INFORMATION, "CancelTransportBehaviour behaviour started.");
 	}
 
 	/**

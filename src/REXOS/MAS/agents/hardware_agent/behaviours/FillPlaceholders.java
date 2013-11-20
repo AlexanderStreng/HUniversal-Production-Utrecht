@@ -110,6 +110,8 @@ public class FillPlaceholders extends ReceiveBehaviour {
 		super(hardwareAgent, MESSAGE_TEMPLATE);
 		this.hardwareAgent = hardwareAgent;
 		this.moduleFactory = moduleFactory;
+		
+		Logger.log(LogLevel.INFORMATION, "FillPlaceholders behaviour started.");
 	}
 
 	/**

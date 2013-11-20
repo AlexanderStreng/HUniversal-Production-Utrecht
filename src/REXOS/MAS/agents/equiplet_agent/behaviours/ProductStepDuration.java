@@ -124,6 +124,8 @@ public class ProductStepDuration extends ReceiveBehaviour {
 		
 		this.objectId = objectId;
 		this.conversationId = conversationID;
+		
+		Logger.log(LogLevel.DEBUG, "ProductStepDuration behaviour started.");
 	}
 	
 	@Override
@@ -135,7 +137,7 @@ public class ProductStepDuration extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(objectId);
 			} catch (IOException e) {
-				
+				Logger.log(LogLevel.ERROR, "", e);
 			}
 		}
 		responseMessage.setOntology("ProductStepDuration");
@@ -168,11 +170,11 @@ public class ProductStepDuration extends ReceiveBehaviour {
 				equipletAgent.removeBehaviour(this);
 				
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Database connection lost ...", e);
 				equipletAgent.doDelete();
 			}
 		}else{
-			
+			Logger.log(LogLevel.ERROR, "Response timed out ...");
 		}
 	}
 }

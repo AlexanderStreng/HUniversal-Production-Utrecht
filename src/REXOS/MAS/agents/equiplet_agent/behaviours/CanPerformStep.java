@@ -124,6 +124,8 @@ public class CanPerformStep extends ReceiveBehaviour implements ParentBehaviourC
 		super(equipletAgent, MESSAGE_TEMPLATE);
 		this.equipletAgent = equipletAgent;
 		this.productStepsBlackboard = productStepsBlackBoard;
+		
+		Logger.log(LogLevel.DEBUG, "CanPerformStep behaviour started.");
 	}
 
 	/**
@@ -162,6 +164,7 @@ public class CanPerformStep extends ReceiveBehaviour implements ParentBehaviourC
 						};
 					}
 				} else {
+					Logger.log(LogLevel.ERROR, "\\\\error ...");
 					// error
 				}
 				currentProductStep =
@@ -178,13 +181,13 @@ public class CanPerformStep extends ReceiveBehaviour implements ParentBehaviourC
 				
 				
 			} catch(InvalidDBNamespaceException | GeneralMongoException | NullPointerException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Database connection lost.", e);
 				ACLMessage errorResponse = message.createReply();
 				errorResponse.setPerformative(ACLMessage.FAILURE);
 				errorResponse.setContent("Failed to process the step");
 				equipletAgent.send(errorResponse);
 			} catch(UnreadableException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Failed to read ..", e);
 				ACLMessage errorResponse = message.createReply();
 				errorResponse.setPerformative(ACLMessage.FAILURE);
 				errorResponse.setContent("No step given");
@@ -192,7 +195,7 @@ public class CanPerformStep extends ReceiveBehaviour implements ParentBehaviourC
 			}
 		}
 		else if (message.getPerformative() == ACLMessage.DISCONFIRM){
-			
+			Logger.log(LogLevel.WARNING, "Message disconfirmed");
 		}
 	}
 

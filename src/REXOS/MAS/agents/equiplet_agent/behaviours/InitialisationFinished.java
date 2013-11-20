@@ -104,6 +104,8 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 		this.equipletAgent = equipletAgent;
 		stateUpdateSubscription = new FieldUpdateSubscription("state", this);
 		stateUpdateSubscription.addOperation(MongoUpdateLogOperation.SET);
+		
+		Logger.log(LogLevel.DEBUG, "InitialisationFinished behaviour started.");
 	}
 
 	/**
@@ -114,7 +116,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 	@Override
 	public void handle(ACLMessage message) {
 		if(message != null) {
-
+			Logger.log(LogLevel.DEBUG, "Message received: %s", message.getContent());
 			try {
 				EquipletStateEntry equipletState = equipletAgent.getEquipletStateEntry();
 				if(equipletState != null && equipletState.getEquipletState() != EquipletState.STANDBY && equipletState.getEquipletState() != EquipletState.NORMAL) {
@@ -128,7 +130,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 					equipletAgent.getCollectiveBBClient().insertDocument(directoryEntry.toBasicDBObject());
 				}
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Database connection lost.", e);
 				equipletAgent.doDelete();
 			}
 
@@ -145,7 +147,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 			equipletAgent.addBehaviour(new StartStep(equipletAgent));
 			
 		} else {
-			
+			Logger.log(LogLevel.WARNING, "Message == null ...");
 			equipletAgent.doDelete();
 		}
 	}
@@ -156,10 +158,11 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 			// inserts himself on the collective blackboard equiplet directory.
 			DBObject dbObject = equipletAgent.getStateBBClient().findDocumentById(entry.getTargetObjectId());
 			EquipletStateEntry state = new EquipletStateEntry((BasicDBObject) dbObject);
+			
+			Logger.log(LogLevel.DEBUG, "EquipletState changed to %s%n", state.getEquipletState().name());
+			
 			switch(state.getEquipletState()) {
 				case STANDBY:
-					
-
 					EquipletDirectoryEntry directoryEntry =
 							new EquipletDirectoryEntry(equipletAgent.getAID(), equipletAgent.getCapabilities(),
 									equipletAgent.getDbData());
@@ -168,11 +171,10 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 					equipletAgent.getStateBBClient().unsubscribe(stateUpdateSubscription);
 					break;
 				default:
-					
 					break;
 			}
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection lost.", e);
 			// Cannot add myself on the collective BB, so remove the agent since it cannot be found by product agents 
 			equipletAgent.doDelete();
 		}

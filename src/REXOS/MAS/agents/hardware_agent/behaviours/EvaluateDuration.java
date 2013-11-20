@@ -109,6 +109,8 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		super(hardwareAgent, MESSAGE_TEMPLATE);
 		this.hardwareAgent = hardwareAgent;
 		this.moduleFactory = moduleFactory;
+		
+		Logger.log(LogLevel.INFORMATION, "EvaluateDuration behaviour started.");
 	}
 
 	/**

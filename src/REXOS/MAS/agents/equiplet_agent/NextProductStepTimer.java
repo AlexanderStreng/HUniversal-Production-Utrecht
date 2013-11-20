@@ -168,6 +168,7 @@ public class NextProductStepTimer extends Timer {
 	 * 
 	 */
 	public void rescheduleTimer() {
+		Logger.log(LogLevel.INFORMATION, "Rescheduling!");
 		try {
 			BasicDBObject query = new BasicDBObject("status", StepStatusCode.PLANNED.name());
 			BasicDBObject orderby = new BasicDBObject("scheduleData", new BasicDBObject("startTime", "1"));
@@ -180,14 +181,14 @@ public class NextProductStepTimer extends Timer {
 				if(nextUsedTimeSlot == -1 || scheduleData.getStartTime() < nextUsedTimeSlot) {
 					setNextUsedTimeSlot(scheduleData.getStartTime());
 				} else {
-					
+					Logger.log(LogLevel.DEBUG, "Earliest step is not before current step (%d)", scheduleData.getStartTime());
 				}
 			} else {
-				
+				Logger.log(LogLevel.DEBUG, "no more steps on PLANNED");
 				setNextUsedTimeSlot(-1);
 			}
 		} catch(GeneralMongoException | InvalidDBNamespaceException e) {
-			
+			Logger.log(LogLevel.ERROR, "MongoDb failed at " + this.equipletAgent.getAID().getLocalName(), e);			
 		}
 
 	}
@@ -211,8 +212,6 @@ public class NextProductStepTimer extends Timer {
 				ProductStep productStep =
 						new ProductStep((BasicDBObject) equipletAgent.getProductStepBBClient().findDocumentById(productStepEntry));
 
-				
-				
 				// ask the productAgent to start the production of the step.
 //				ACLMessage answer = new ACLMessage(ACLMessage.QUERY_IF);
 //				answer.setConversationId(conversationId);

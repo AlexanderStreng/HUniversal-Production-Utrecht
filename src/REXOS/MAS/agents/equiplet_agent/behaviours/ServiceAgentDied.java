@@ -32,6 +32,8 @@ package agents.equiplet_agent.behaviours;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.equiplet_agent.EquipletAgent;
 import agents.shared_behaviours.ReceiveBehaviour;
 
@@ -70,6 +72,8 @@ public class ServiceAgentDied extends ReceiveBehaviour {
 	public ServiceAgentDied(EquipletAgent equipletAgent) {
 		super(equipletAgent, MESSAGE_TEMPLATE);
 		this.equipletAgent = equipletAgent;
+		
+		Logger.log(LogLevel.DEBUG, "ServiceAgentDied behaviour started.");
 	}
 
 	/**
@@ -81,6 +85,7 @@ public class ServiceAgentDied extends ReceiveBehaviour {
 	 */
 	@Override
 	public void handle(ACLMessage message) {
+		Logger.log(LogLevel.WARNING, "EquipletAgent deleted.");
 		equipletAgent.doDelete();
 	}
 }

@@ -89,6 +89,8 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 	 */
 	public PartsInfo(LogisticsAgent logisticsAgent, String conversationId) {
 		this(logisticsAgent, 2000, conversationId);
+		
+		Logger.log(LogLevel.INFORMATION, "PartsInfo behaviour started.");
 	}
 
 	/**

@@ -96,6 +96,8 @@ public class AbortStep extends ReceiveBehaviour {
 	public AbortStep(EquipletAgent equipletAgent) {
 		super(equipletAgent, MESSAGE_TEMPLATE);
 		this.equipletAgent = equipletAgent;
+		
+		Logger.log(LogLevel.DEBUG, "AbortStep behaviour started.");
 	}
 
 	/**
@@ -121,16 +123,18 @@ public class AbortStep extends ReceiveBehaviour {
 	
 				//if the status is planned reschedule the timer
 				if(productStep.getStatus() == StepStatusCode.PLANNED) {
+					Logger.log(LogLevel.INFORMATION, "Rescheduling!");
 					equipletAgent.cancelProductStep(productStepEntryId, "productagent canceled");
 					equipletAgent.getTimer().rescheduleTimer();
-					
 				} else {
+					Logger.log(LogLevel.WARNING, "Failed to AbortStep!");
 					ACLMessage reply = message.createReply();
 					reply.setPerformative(ACLMessage.FAILURE);
 					myAgent.send(reply);
 				}
 			} catch(InvalidDBNamespaceException | GeneralMongoException e) {
 				
+				Logger.log(LogLevel.ERROR, "EquipletAgent deleted.", e);
 				equipletAgent.doDelete();
 			}
 		}

@@ -48,6 +48,8 @@ import libraries.knowledgedb_client.KnowledgeDBClient;
 import libraries.knowledgedb_client.KnowledgeException;
 import libraries.knowledgedb_client.Queries;
 import libraries.knowledgedb_client.Row;
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.hardware_agent.HardwareAgent;
 import agents.shared_behaviours.ReceiveBehaviour;
 
@@ -82,6 +84,8 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 	public RequiredModulesPresent(HardwareAgent hardwareAgent) {
 		super(hardwareAgent, MESSAGE_TEMPLATE);
 		this.hardwareAgent = hardwareAgent;
+		
+		Logger.log(LogLevel.INFORMATION, "RequiredModulesPresent behaviour started.");
 	}
 
 	/**

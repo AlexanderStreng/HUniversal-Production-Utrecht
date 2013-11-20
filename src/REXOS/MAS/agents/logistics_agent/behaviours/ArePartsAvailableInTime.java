@@ -73,6 +73,8 @@ public class ArePartsAvailableInTime extends ReceiveOnceBehaviour {
 	 */
 	public ArePartsAvailableInTime(LogisticsAgent logisticsAgent, String conversationId) {
 		this(logisticsAgent, 2000, conversationId);
+		
+		Logger.log(LogLevel.INFORMATION, "ArePartsAvailableInTime behaviour started.");
 	}
 
 	/**

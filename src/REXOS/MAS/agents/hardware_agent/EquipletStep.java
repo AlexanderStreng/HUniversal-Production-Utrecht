@@ -36,6 +36,9 @@
  **/
 package agents.hardware_agent;
 
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
+
 import org.bson.types.ObjectId;
 
 import agents.data_classes.MongoSaveable;
@@ -117,6 +120,8 @@ public class EquipletStep implements MongoSaveable {
 		this.equipletStepStatus = status;
 		this.statusData = statusData;
 		this.timeData = timeData;
+		
+		Logger.log(LogLevel.INFORMATION, "%s created.", this.toString());
 	}
 
 	/**
@@ -127,6 +132,8 @@ public class EquipletStep implements MongoSaveable {
 	 */
 	public EquipletStep(BasicDBObject object) {
 		fromBasicDBObject(object);
+		
+		Logger.log(LogLevel.INFORMATION, "%s created.", this.toString());
 	}
 
 	/**

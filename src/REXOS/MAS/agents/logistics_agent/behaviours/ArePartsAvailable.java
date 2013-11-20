@@ -76,6 +76,8 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 	public ArePartsAvailable(LogisticsAgent logisticsAgent) {
 		super(logisticsAgent, MESSAGE_TEMPLATE);
 		this.logisticsAgent = logisticsAgent;
+		
+		Logger.log(LogLevel.INFORMATION, "ArePartsAvailable behaviour started.");
 	}
 
 	/**

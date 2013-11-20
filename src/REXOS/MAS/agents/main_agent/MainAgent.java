@@ -84,8 +84,9 @@ public class MainAgent extends Agent {
 	@Override
 	protected void setup() {
 		try {
+			Logger.eraseLogFile();			
+			Logger.log(LogLevel.INFORMATION, "MainAgent created.");
 			
-
 			/**
 			 * Make a new logistics agent
 			 */

@@ -49,6 +49,8 @@ package agents.hardware_agent.behaviours;
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.hardware_agent.HardwareAgent;
 import agents.shared_behaviours.ReceiveBehaviour;
 
@@ -83,6 +85,8 @@ public class ServiceAgentDied extends ReceiveBehaviour {
 	public ServiceAgentDied(HardwareAgent hardwareAgent) {
 		super(hardwareAgent, MESSAGE_TEMPLATE);
 		this.hardwareAgent = hardwareAgent;
+		
+		Logger.log(LogLevel.INFORMATION, "ServiceAgentDied behaviour started.");
 	}
 
 	/**

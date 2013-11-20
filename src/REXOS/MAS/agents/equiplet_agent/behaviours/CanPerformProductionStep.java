@@ -113,6 +113,8 @@ public class CanPerformProductionStep extends ReceiveBehaviour {
 		
 		this.objectId = objectId;
 		this.conversationId = conversationID;
+		
+		Logger.log(LogLevel.DEBUG, "CanPerformProductionStep behaviour started.");
 	}
 	
 	@Override
@@ -125,7 +127,7 @@ public class CanPerformProductionStep extends ReceiveBehaviour {
 			try {
 				queryIFMessage.setContentObject(objectId);
 			} catch (IOException e) {
-				
+				Logger.log(LogLevel.ERROR, "Setting the Query's content failed!", e);
 			}
 		}
 		equipletAgent.send(queryIFMessage);
@@ -150,7 +152,7 @@ public class CanPerformProductionStep extends ReceiveBehaviour {
 				productStepsBlackboard.removeDocuments(new BasicDBObject("_id",
 						productStepEntryId));
 				}catch (GeneralMongoException | InvalidDBNamespaceException e) {
-					
+					Logger.log(LogLevel.CRITICAL, "Database connection lost!", e);
 				}
 			}
 			

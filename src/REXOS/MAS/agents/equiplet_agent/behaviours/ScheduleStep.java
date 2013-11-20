@@ -101,6 +101,8 @@ public class ScheduleStep extends ReceiveBehaviour {
 		super(equipletAgent, MESSAGE_TEMPLATE);
 		this.equipletAgent = equipletAgent;
 		this.productStepsBlackboard = productStepsBlackboard;
+		
+		Logger.log(LogLevel.DEBUG, "ScheduleStep behaviour started.");
 	}
 
 	/**
@@ -118,7 +120,6 @@ public class ScheduleStep extends ReceiveBehaviour {
 			// Gets the timeslot out of the message content.
 			long start = (Long) message.getContentObject();
 			
-
 			// Gets the scheduledata out of the productstep.
 			ObjectId productStepId = equipletAgent.getRelatedObjectId(message.getConversationId());
 			
@@ -133,7 +134,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 					productStepsBlackboard.findDocuments(QueryBuilder.start("scheduleData.startTime").greaterThan(-1).get());
 
 			boolean fitsInSchedule = true;
-
+			Logger.log(LogLevel.INFORMATION, "I currently have " + plannedSteps.size() + " planned steps.");
 			
 			// check if other steps not are scheduled.
 			for(DBObject plannedStep : plannedSteps) {
@@ -163,6 +164,8 @@ public class ScheduleStep extends ReceiveBehaviour {
 				productStepsBlackboard.updateDocuments(new BasicDBObject("_id", productStepId), new BasicDBObject("$set",
 						new BasicDBObject("scheduleData", scheduleData.toBasicDBObject())));
 
+				Logger.log(LogLevel.INFORMATION, "Fits into the schedule! Schedule message sent.");
+				
 				ACLMessage scheduleMessage = new ACLMessage(ACLMessage.REQUEST);
 				scheduleMessage.addReceiver(equipletAgent.getServiceAgent());
 				scheduleMessage.setOntology("ScheduleStep");
@@ -173,7 +176,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 			}
 			else 
 			{
-				
+				Logger.log(LogLevel.WARNING, "Does not fit into schedule! Schedule disconfirmed.");
 				ACLMessage reply = message.createReply();
 				reply.setPerformative(ACLMessage.DISCONFIRM);
 				myAgent.send(reply);
@@ -181,7 +184,7 @@ public class ScheduleStep extends ReceiveBehaviour {
 		}
 		catch(IOException | InvalidDBNamespaceException | GeneralMongoException | UnreadableException e) 
 		{
-			
+			Logger.log(LogLevel.CRITICAL, "", e);
 			myAgent.doDelete();
 		}
 	}

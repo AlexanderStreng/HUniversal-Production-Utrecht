@@ -271,7 +271,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 		 	productStepsName = Configuration.getProperty(ConfigurationFiles.EQUIPLET_DB_PROPERTIES, "ProductStepsBlackBoardName", getAID().getLocalName());
 		 	planningName = Configuration.getProperty(ConfigurationFiles.EQUIPLET_DB_PROPERTIES, "PlanningBlackBoardName", getAID().getLocalName());
 		 	
-			
+			Logger.log(LogLevel.DEBUG, "EquipletAgent created.");
 			
 			communicationTable = new HashMap<String, ObjectId>();
 			behaviours = new ArrayList<Behaviour>();
@@ -285,7 +285,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			for(Row step : steps) {
 				capabilities.add((int) step.get("id"));
 			}
-			
+			Logger.log(LogLevel.DEBUG, "Capabilities[0]: " + capabilities.get(0));
 
 			dbData = new DbData(equipletDbIp, equipletDbPort, equipletDbName);
 
@@ -344,12 +344,11 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			collectiveBBClient.setCollection(equipletDirectoryName);
 		} catch(GeneralMongoException | InvalidDBNamespaceException | UnknownHostException | StaleProxyException
 				| KnowledgeException | KeyNotFoundException  e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection lost!", e);
 			//delete this agent and all opened blackboards / started agents
 			doDelete();
 		} catch(Exception e){
-			e.printStackTrace();
-			
+			Logger.log(LogLevel.EMERGENCY, "Gotta catch 'em all...", e);
 		}
 
 		// starts the behaviour for receiving message when the Service Agent dies.
@@ -370,6 +369,8 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 	@Override
 	public void takeDown() {
 		try {
+			Logger.log(LogLevel.WARNING, "EquipletAgent called TakeDown.");
+			
 			// Removes himself from the collective blackboard equiplet directory.
 			collectiveBBClient.removeDocuments(new BasicDBObject("AID", getAID().getName()));
 
@@ -386,7 +387,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			productStepBBClient.removeDocuments(new BasicDBObject());
 			productStepBBClient.unsubscribe(statusSubscription);
 		} catch(InvalidDBNamespaceException | GeneralMongoException | IOException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection lost!", e);
 		}
 
 		ACLMessage deadMessage = new ACLMessage(ACLMessage.FAILURE);
@@ -398,13 +399,15 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 	public void cancelProductStep(ObjectId productStepId, String reason) {
 		try {
 			// TODO cancel all behaviours started specific for this productStep
-
+			
+			Logger.log(LogLevel.WARNING, "ProductStep #%s cancelled because %s.", productStepId.toString(), reason);
+			
 			productStepBBClient.updateDocuments(
 					new BasicDBObject("_id", productStepId),
 					new BasicDBObject("$set", new BasicDBObject("status", StepStatusCode.ABORTED.name()).append(
 							"statusData", new BasicDBObject("reason", reason))));
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			e.printStackTrace();
+			Logger.log(LogLevel.CRITICAL, "Database connection lost!", e);
 		}
 	}
 
@@ -414,6 +417,8 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 	@Override
 	public void onMessage(MongoOperation operation, OplogEntry entry) {
 		try {
+			Logger.log(LogLevel.DEBUG, "Received message %s" , entry.getNamespace().split("\\.")[1]);
+			
 			switch(entry.getNamespace().split("\\.")[1]) {
 				case "ProductStepsBlackBoard":
 					// Get the productstep.
@@ -489,6 +494,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 						default:
 							break;
 					}
+					Logger.log(LogLevel.DEBUG, "Sent message \"%s\" to %s", responseMessage.getOntology(), responseMessage.getAllReceiver().toString());
 					send(responseMessage);
 					break;
 				case "equipletState":
@@ -512,8 +518,8 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 							break;
 					}
 					break;
-				default:
 					
+				default:
 					break;
 			}
 		} catch(GeneralMongoException | InvalidDBNamespaceException | IOException e) {
@@ -535,6 +541,8 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 		// TODO when the equipletCommand blackboard has been updated to have a equipletId like field this search query
 		// should be adapted.
 
+		Logger.log(LogLevel.INFORMATION, "Desired state set to: #%d");
+		
 		// desiredStateBBClient.updateDocuments(new BasicDBObject("id", equipletId), new BasicDBObject("$set",
 		// new BasicDBObject("desiredState", state.getValue())));
 		desiredStateBBClient.updateDocuments(new BasicDBObject(), new BasicDBObject("$set", new BasicDBObject(

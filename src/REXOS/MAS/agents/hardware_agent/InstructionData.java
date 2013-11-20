@@ -35,6 +35,8 @@ package agents.hardware_agent;
  *          OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.data_classes.MongoSaveable;
 
 import com.mongodb.BasicDBObject;
@@ -85,6 +87,8 @@ public class InstructionData implements MongoSaveable {
 		this.look_up = look_up;
 		this.look_up_parameters = look_up_parameters;
 		this.payload = payload;
+		
+		Logger.log(LogLevel.INFORMATION, "%s created.",this.toString());
 
 	}
 
@@ -95,6 +99,7 @@ public class InstructionData implements MongoSaveable {
 	 */
 	public InstructionData(BasicDBObject object) {
 		fromBasicDBObject(object);
+		Logger.log(LogLevel.INFORMATION, "%s created.", this.toString());
 	}
 
 	/**
