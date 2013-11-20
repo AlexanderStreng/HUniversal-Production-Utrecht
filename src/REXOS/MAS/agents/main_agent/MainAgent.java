@@ -114,7 +114,7 @@ public class MainAgent extends Agent {
 			};
 			
 			getContainerController().createNewAgent("EQ1", "agents.equiplet_agent.EquipletAgent", ar).start();
-			//getContainerController().createNewAgent("EQ2", "agents.equiplet_agent.EquipletAgent", ar).start();
+			getContainerController().createNewAgent("EQ2", "agents.equiplet_agent.EquipletAgent", ar).start();
 
 			
 

@@ -59,8 +59,8 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	private InformerBehaviour _informerBehaviour;
 	private SchedulerBehaviour _schedulerBehaviour;
 	private ProduceBehaviour _produceBehaviour;
-	private SocketBehaviour _socketBehaviour;
-	private HeartBeatBehaviour _heartBeatBehaviour;
+	//private SocketBehaviour _socketBehaviour;
+	//private HeartBeatBehaviour _heartBeatBehaviour;
 	private RescheduleBehaviour _rescheduleBehaviour;
 
 	private ParallelBehaviour _parallelBehaviour;
@@ -79,7 +79,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 		super(myAgent);
 		_productAgent = (ProductAgent) myAgent;
 		//System.out.println("Overview behaviour created. Starting all behaviours to the agents.");
-				
+		Logger.log(LogLevel.DEBUG, "Overview behaviour created. Starting all behaviours to the agents.");		
 		
 		_productAgent.setStatus(AgentStatus.INITIALIZING);
 		this.initialize();
@@ -91,12 +91,12 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	private void initialize() {
 
-		_socketBehaviour = new SocketBehaviour(myAgent, _productAgent
-				.getProperties().getCallback());
+		//_socketBehaviour = new SocketBehaviour(myAgent, _productAgent
+		//		.getProperties().getCallback());
 
-		_heartBeatBehaviour = new HeartBeatBehaviour(myAgent, 5000,
-				_socketBehaviour);
-		_socketBehaviour.setHeartBeatBehaviour(_heartBeatBehaviour);
+		//_heartBeatBehaviour = new HeartBeatBehaviour(myAgent, 5000,
+				//_socketBehaviour);
+		//_socketBehaviour.setHeartBeatBehaviour(_heartBeatBehaviour);
 
 		_plannerBehaviour = new PlannerBehaviour(myAgent, this);
 
@@ -114,8 +114,8 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 
 		myAgent.addBehaviour(_sequentialBehaviour);
 
-		_parallelBehaviour.addSubBehaviour(_socketBehaviour);
-		_parallelBehaviour.addSubBehaviour(_heartBeatBehaviour);
+		//_parallelBehaviour.addSubBehaviour(_socketBehaviour);
+		//_parallelBehaviour.addSubBehaviour(_heartBeatBehaviour);
 
 		myAgent.addBehaviour(_parallelBehaviour);
 	}
@@ -146,7 +146,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 				this.startScheduling();
 				break;
 			case DONE_SCHEDULING:
-				
+				Logger.log(LogLevel.DEBUG, "Done Scheduling");
 				_productAgent.setStatus(AgentStatus.PRODUCING);
 				break;
 			case DONE_PRODUCING:
@@ -160,7 +160,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 				break;
 			}
 		} catch (Exception e) {
-			
+			Logger.log(LogLevel.ERROR, "gotta catch 'em all!", e);
 			//e.printStackTrace();
 		}
 	}
@@ -182,7 +182,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void startPlanning() {
 		_productAgent.setStatus(AgentStatus.PLANNING);
-		
+		Logger.log(LogLevel.INFORMATION, "Started a Planningbehaviour");
 		myAgent.addBehaviour(_plannerBehaviour);
 	}
 
@@ -191,7 +191,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void startInforming() {
 		_productAgent.setStatus(AgentStatus.INFORMING);
-		
+		Logger.log(LogLevel.INFORMATION, "Started a Informingbehaviour");
 		myAgent.addBehaviour(_informerBehaviour);
 	}
 
@@ -200,7 +200,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void startScheduling() {
 		_productAgent.setStatus(AgentStatus.SCHEDULING);
-		
+		Logger.log(LogLevel.INFORMATION, "Started a Schedulingbehaviour");
 		myAgent.addBehaviour(_schedulerBehaviour);
 	}
 
@@ -208,7 +208,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 * Starts the produce behavior
 	 */
 	public void startProducing() {
-		
+		Logger.log(LogLevel.INFORMATION, "Started a ProduceBehaviour");
 		if (_produceBehaviour.done() == false)
 			myAgent.addBehaviour(_produceBehaviour);
 	}
@@ -218,7 +218,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 		_plannerBehaviour.reset();
 		_informerBehaviour.reset();
 		_schedulerBehaviour.reset();
-		
+		Logger.log(LogLevel.INFORMATION, "Started a RescheduleBehaviour");
 		myAgent.addBehaviour(_rescheduleBehaviour);
 	}
 
@@ -240,29 +240,29 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 			switch (as) 
 			{
 				case PLANNING:
-					
+					Logger.log(LogLevel.INFORMATION, "Done planning.");
 					_productAgent.setStatus(AgentStatus.DONE_PLANNING);
 					// Check if there was an error. Do this for all cases
 					break;
 				case INFORMING:
-					
+					Logger.log(LogLevel.INFORMATION, "Done Informing.");
 					_productAgent.setStatus(AgentStatus.DONE_INFORMING);
 					break;
 				case SCHEDULING:
-					
+					Logger.log(LogLevel.INFORMATION, "Done scheduling.");
 					_productAgent.setStatus(AgentStatus.DONE_SCHEDULING);
 					break;
 				case PRODUCING:
-					
+					Logger.log(LogLevel.INFORMATION, "Done producing.");
 					_productAgent.setStatus(AgentStatus.DONE_PRODUCING);
 					break;
 				case RESCHEDULING:
-					
+					Logger.log(LogLevel.INFORMATION, "Done rescheduling.");
 					_rescheduling = false;
 					_productAgent.setStatus(AgentStatus.DONE_RESCHEDULING);
 					break;
 				default:
-					
+					Logger.log(LogLevel.WARNING, "Unknown status. Status: " + as.toString());
 					break;
 			}
 		} 
@@ -290,10 +290,10 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 * Stops the socket
 	 */
 	public void cleanBehaviour() {
-		_socketBehaviour.write(false, "Product Completed.", "1");
-		
+		//_socketBehaviour.write(false, "Product Completed.", "1");
+		//Logger.log(LogLevel.DEBUG, "Done overview, stopping SocketBehaviour.");
 		myAgent.removeBehaviour(_parallelBehaviour);
-		if (_socketBehaviour != null)
-			_socketBehaviour.stop();
+		//if (_socketBehaviour != null)
+		//	_socketBehaviour.stop();
 	}
 }
