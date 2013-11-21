@@ -96,6 +96,7 @@ public class PlannerBehaviour extends Behaviour {
 	@Override
 	public void onStart() {
 		try {
+			Logger.log(LogLevel.DEBUG, "PlannerBehaviour behaviour started.");
 			_productAgent = (ProductAgent) myAgent;
 
 			BlackboardClient bbc = new BlackboardClient(
@@ -143,6 +144,7 @@ public class PlannerBehaviour extends Behaviour {
 		} catch (NullPointerException | InvalidDBNamespaceException
 				| GeneralMongoException | UnknownHostException e) {
 			this._isError = true;
+			Logger.log(LogLevel.CRITICAL, "Database connection lost.", e);
 		}
 	}
 

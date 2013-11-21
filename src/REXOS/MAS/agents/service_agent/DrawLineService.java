@@ -32,6 +32,8 @@ package agents.service_agent;
 
 import java.util.HashMap;
 
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.data_classes.Part;
 import agents.data_classes.Position;
 import agents.data_classes.ScheduleData;
@@ -61,6 +63,7 @@ public class DrawLineService extends Service {
 				return false;
 			}
 		} catch (IllegalArgumentException e) {
+			Logger.log(LogLevel.ERROR, "Illegal Arguments.", e);
 			return false;
 		}
 	}

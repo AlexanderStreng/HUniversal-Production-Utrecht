@@ -80,8 +80,11 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 		_productAgent = (ProductAgent) myAgent;
 		//System.out.println("Overview behaviour created. Starting all behaviours to the agents.");
 		
+		Logger.log(LogLevel.DEBUG, "Initializing ProductAgent");
 		_productAgent.setStatus(AgentStatus.INITIALIZING);
 		this.initialize();
+
+		Logger.log(LogLevel.DEBUG, "Done initializing ProductAgent");
 		_productAgent.setStatus(AgentStatus.DONE_INITIALIZING);
 	}
 
@@ -145,7 +148,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 				this.startScheduling();
 				break;
 			case DONE_SCHEDULING:
-				Logger.log(LogLevel.DEBUG, "Done Scheduling");
+				//Logger.log(LogLevel.DEBUG, "Done Scheduling");
 				_productAgent.setStatus(AgentStatus.PRODUCING);
 				break;
 			case DONE_PRODUCING:
@@ -159,8 +162,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 				break;
 			}
 		} catch (Exception e) {
-			//Logger.log(LogLevel.ERROR, "gotta catch 'em all!", e);
-			//e.printStackTrace();
+			Logger.log(LogLevel.CRITICAL, "Gotta catch 'em all...", e);
 		}
 	}
 
@@ -181,7 +183,6 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void startPlanning() {
 		_productAgent.setStatus(AgentStatus.PLANNING);
-		//Logger.log(LogLevel.INFORMATION, "Started a Planningbehaviour");
 		myAgent.addBehaviour(_plannerBehaviour);
 	}
 
@@ -190,7 +191,6 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void startInforming() {
 		_productAgent.setStatus(AgentStatus.INFORMING);
-		//Logger.log(LogLevel.INFORMATION, "Started a Informingbehaviour");
 		myAgent.addBehaviour(_informerBehaviour);
 	}
 
@@ -199,7 +199,6 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void startScheduling() {
 		_productAgent.setStatus(AgentStatus.SCHEDULING);
-		//Logger.log(LogLevel.INFORMATION, "Started a Schedulingbehaviour");
 		myAgent.addBehaviour(_schedulerBehaviour);
 	}
 
@@ -207,7 +206,6 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 * Starts the produce behavior
 	 */
 	public void startProducing() {
-		//Logger.log(LogLevel.INFORMATION, "Started a ProduceBehaviour");
 		if (_produceBehaviour.done() == false)
 			myAgent.addBehaviour(_produceBehaviour);
 	}
@@ -217,7 +215,6 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 		_plannerBehaviour.reset();
 		_informerBehaviour.reset();
 		_schedulerBehaviour.reset();
-		//Logger.log(LogLevel.INFORMATION, "Started a RescheduleBehaviour");
 		myAgent.addBehaviour(_rescheduleBehaviour);
 	}
 
@@ -261,7 +258,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 					_productAgent.setStatus(AgentStatus.DONE_RESCHEDULING);
 					break;
 				default:
-					//Logger.log(LogLevel.WARNING, "Unknown status. Status: " + as.toString());
+					Logger.log(LogLevel.WARNING, "Unknown status. Status: " + as.toString());
 					break;
 			}
 		} 
@@ -290,7 +287,7 @@ public class OverviewBehaviour extends Behaviour implements BehaviourCallback {
 	 */
 	public void cleanBehaviour() {
 		//_socketBehaviour.write(false, "Product Completed.", "1");
-		//Logger.log(LogLevel.DEBUG, "Done overview, stopping SocketBehaviour.");
+		Logger.log(LogLevel.DEBUG, "Done overview, stopping SocketBehaviour.");
 		myAgent.removeBehaviour(_parallelBehaviour);
 		//if (_socketBehaviour != null)
 		//	_socketBehaviour.stop();

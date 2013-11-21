@@ -125,7 +125,7 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		
-		Logger.log(LogLevel.DEBUG, "Received message \"%s\"", message.toString());
+		Logger.log(LogLevel.DEBUG, "Received message.", message.toString());
 		
 		if ( message.getPerformative() == ACLMessage.QUERY_IF){
 			boolean modulesPresent = true;
@@ -150,8 +150,10 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 				reply.setOntology("RequiredModulesPresent");
 				if(modulesPresent) {
 					reply.setPerformative(ACLMessage.CONFIRM);
+					Logger.log(LogLevel.INFORMATION, "Required modules present.");
 				} else {
 					reply.setPerformative(ACLMessage.DISCONFIRM);
+					Logger.log(LogLevel.ALERT, "Required modules NOT present.");
 				}
 	
 				hardwareAgent.send(reply);

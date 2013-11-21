@@ -133,6 +133,7 @@ public class PartsInfo extends ReceiveBehaviour {
 
 	@Override
 	public void onStart(){
+		Logger.log(LogLevel.DEBUG, "PartsInfo behaviour started.");
 		ACLMessage responseMessage = new ACLMessage(ACLMessage.QUERY_REF);
 		responseMessage.addReceiver(serviceAgent.getLogisticsAID());
 		responseMessage.setConversationId(conversationID);
@@ -140,7 +141,7 @@ public class PartsInfo extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(productStep.getInputParts());
 			} catch (IOException e) {
-				
+				Logger.log(LogLevel.ERROR, "", e);
 			}
 		}
 		responseMessage.setOntology("PartsInfo");
@@ -162,6 +163,7 @@ public class PartsInfo extends ReceiveBehaviour {
 	public void handle(ACLMessage message) {
 		if(message != null) {
 			try {
+				Logger.log(LogLevel.DEBUG, "Received message.");
 				BlackboardClient productStepBBClient = serviceAgent.getProductStepBBClient();
 				BlackboardClient serviceStepBBClient = serviceAgent.getServiceStepBBClient();
 
@@ -230,12 +232,12 @@ public class PartsInfo extends ReceiveBehaviour {
 				productStepBBClient.updateDocuments(new BasicDBObject("_id", productStepId), new BasicDBObject("$set",
 						new BasicDBObject("status", StepStatusCode.PLANNED.name())));
 			} catch(UnreadableException | InvalidDBNamespaceException | GeneralMongoException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Database connection error.", e);
 				serviceAgent.doDelete();
 			}
 			serviceAgent.removeBehaviour(this);
 		} else {
-			
+			Logger.log(LogLevel.WARNING, "Message == null. Deleting ServiceAgent.");
 			serviceAgent.doDelete();
 		}
 	}

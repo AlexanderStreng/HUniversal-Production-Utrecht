@@ -75,6 +75,7 @@ public class InitialisationFinished extends ReceiveBehaviour {
 	public InitialisationFinished(ServiceAgent serviceAgent) {
 		super(serviceAgent, MESSAGE_TEMPLATE);
 		this.serviceAgent = serviceAgent;
+		Logger.log(LogLevel.DEBUG, "InitialisationFinished behaviour created.");
 	}
 
 	/**
@@ -86,13 +87,13 @@ public class InitialisationFinished extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		if(message != null) {
-
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			ACLMessage response = new ACLMessage(ACLMessage.CONFIRM);
 			response.addReceiver(serviceAgent.getEquipletAgentAID());
 			response.setOntology("InitialisationFinished");
 			serviceAgent.send(response);
 		} else {
-			
+			Logger.log(LogLevel.WARNING, "Message == null. Deleting ServiceAgent.");
 			serviceAgent.doDelete();
 		}
 	}

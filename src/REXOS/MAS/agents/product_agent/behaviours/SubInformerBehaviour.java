@@ -63,6 +63,7 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 	public void onStart() {
 		super.onStart();
 		try {
+			Logger.log(LogLevel.DEBUG, "SubInformerBehaviour behaviour started.");
 			ACLMessage message = new ACLMessage(ACLMessage.QUERY_IF);
 			message.setConversationId(_conversationId);
 			message.addReceiver(_targetEquiplet);
@@ -70,7 +71,7 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 			message.setContentObject(_productionStep);
 			myAgent.send(message);
 		} catch (IOException e) {
-			
+			Logger.log(LogLevel.ERROR, "Failed to start SubInformerBehaviour.", e);
 		}
 	}
 
@@ -82,6 +83,7 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 	public void handle(ACLMessage message) {
 		
 		try {
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			if (message != null) {
 				switch (_currentState) {
 				
@@ -99,7 +101,7 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 					} 
 					else 
 					{
-						
+						Logger.log(LogLevel.ERROR, "Received something different than Confirm.");
 						_parentBehaviour.callbackSubInformerBehaviour(
 								BehaviourStatus.ERROR, this);
 					}
@@ -112,7 +114,7 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 					} 
 					else 
 					{
-						
+						Logger.log(LogLevel.ERROR, "Received something different than Inform.");
 						_parentBehaviour.callbackSubInformerBehaviour(BehaviourStatus.ERROR, this);
 					}
 					break;
@@ -120,11 +122,11 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 					break;
 				}
 			} else {
-				
+				Logger.log(LogLevel.ERROR, "Message == null!");
 				_parentBehaviour.callbackSubInformerBehaviour(BehaviourStatus.ERROR, this);
 			}
 		} catch (IOException | UnreadableException e) {
-			
+			Logger.log(LogLevel.ERROR, "Message can NOT be read.", e);
 			_parentBehaviour.callbackSubInformerBehaviour(BehaviourStatus.ERROR, this);
 		}
 	}

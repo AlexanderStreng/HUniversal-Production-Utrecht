@@ -42,6 +42,8 @@ public class RescheduleBehaviour extends Behaviour {
 		super(a);
 		_productAgent = (ProductAgent) a;
 		this._bc = bc;
+		
+		Logger.log(LogLevel.DEBUG, "RescheduleBehaviour behaviour created.");
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +72,6 @@ public class RescheduleBehaviour extends Behaviour {
 		_productAgent.setProduct(product);
 		_bc.handleCallback(BehaviourStatus.COMPLETED, null);
 	}
-	
 
 	/* (non-Javadoc)
 	 * @see jade.core.behaviours.Behaviour#done()
@@ -80,6 +81,4 @@ public class RescheduleBehaviour extends Behaviour {
 		// TODO Auto-generated method stub
 		return true;
 	}
-	
-	
 }

@@ -72,6 +72,7 @@ public class DrawPointService extends Service {
 				return false;
 			}
 		} catch (IllegalArgumentException e) {
+			Logger.log(LogLevel.ERROR, "Illegal Arugments.", e);
 			return false;
 		}
 

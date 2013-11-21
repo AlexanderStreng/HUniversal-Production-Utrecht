@@ -83,7 +83,6 @@ public class ProduceBehaviour extends agents.shared_behaviours.ReceiveBehaviour 
 				.MatchOntology("StatusUpdate"), MessageTemplate.or(
 				MessageTemplate.MatchOntology("StartStepQuestion"),
 				MessageTemplate.MatchOntology("EquipletAgentDied"))));
-
 	}
 
 	/**
@@ -104,7 +103,8 @@ public class ProduceBehaviour extends agents.shared_behaviours.ReceiveBehaviour 
 	 */
 	@Override
 	public void onStart() {
-		
+
+		Logger.log(LogLevel.DEBUG, "ProduceBehaviour behaviour started.");
 		_production = ((ProductAgent) myAgent).getProduct().getProduction();
 		_conversationIdToProductionStep = _production
 				.createConversationIdToProductionStepMapping();
@@ -125,6 +125,7 @@ public class ProduceBehaviour extends agents.shared_behaviours.ReceiveBehaviour 
 	@Override
 	public void handle(ACLMessage m) {
 		try {
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			String conversationId = m.getConversationId();
 			ProductionStep prodStep = _conversationIdToProductionStep
 					.get(conversationId);
@@ -186,7 +187,7 @@ public class ProduceBehaviour extends agents.shared_behaviours.ReceiveBehaviour 
 				
 			}
 		} catch (Exception e) {
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 			//_bc.handleCallback(BehaviourStatus.ERROR, null);
 			//_stopProduceBehaviour = true;
 		}

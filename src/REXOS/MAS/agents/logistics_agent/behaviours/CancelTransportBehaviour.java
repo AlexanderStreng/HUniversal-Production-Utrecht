@@ -86,7 +86,7 @@ public class CancelTransportBehaviour extends ReceiveBehaviour {
 			Part[] parts = (Part[]) message.getContentObject();
 			
 		} catch(UnreadableException e) {
-			
+			Logger.log(LogLevel.ERROR, "Message unreadable.", e);
 		}
 	}
 }

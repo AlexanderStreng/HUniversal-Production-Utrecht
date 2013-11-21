@@ -93,6 +93,7 @@ public class ProductStepDuration extends ReceiveBehaviour implements ParentBehav
 	public ProductStepDuration(ServiceAgent serviceAgent) {
 		super(serviceAgent, MESSAGE_TEMPLATE);
 		this.serviceAgent = serviceAgent;
+		Logger.log(LogLevel.DEBUG, "ProductionStepDuration behaviour created.");
 	}
 
 	/**
@@ -107,6 +108,7 @@ public class ProductStepDuration extends ReceiveBehaviour implements ParentBehav
 	@Override
 	public void handle(ACLMessage message) {
 		try {
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			ObjectId productStepId = (ObjectId) message.getContentObject();
 			ProductStep productStep =
 					new ProductStep((BasicDBObject) serviceAgent.getProductStepBBClient().findDocumentById(productStepId));
@@ -135,7 +137,7 @@ public class ProductStepDuration extends ReceiveBehaviour implements ParentBehav
 	//		askMessage.setContentObject(serviceStepId);
 	//		serviceAgent.send(askMessage);
 		} catch(UnreadableException | InvalidDBNamespaceException | GeneralMongoException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection error.", e);
 			serviceAgent.doDelete();
 		}
 	}
@@ -147,6 +149,5 @@ public class ProductStepDuration extends ReceiveBehaviour implements ParentBehav
 		answer.setConversationId(result.getConversationId());
 		answer.setOntology("ProductStepDuration");
 		serviceAgent.send(answer);
-		
 	}
 }
