@@ -138,7 +138,6 @@ public class OplogCallbackThread extends Thread {
 			} else {
 				while (!callbacks.empty()) {
 					Callback callback = callbacks.pop();
-					
 					callback.getSubscriber().onMessage(callback.getEntry().getOperation(), callback.getEntry());
 				}
 			}

@@ -87,9 +87,6 @@ public class InstructionData implements MongoSaveable {
 		this.look_up = look_up;
 		this.look_up_parameters = look_up_parameters;
 		this.payload = payload;
-		
-		Logger.log(LogLevel.INFORMATION, "%s created.",this.toString());
-
 	}
 
 	/**
@@ -99,7 +96,6 @@ public class InstructionData implements MongoSaveable {
 	 */
 	public InstructionData(BasicDBObject object) {
 		fromBasicDBObject(object);
-		Logger.log(LogLevel.INFORMATION, "%s created.", this.toString());
 	}
 
 	/**

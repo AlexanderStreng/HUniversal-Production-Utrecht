@@ -77,7 +77,7 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 		super(logisticsAgent, MESSAGE_TEMPLATE);
 		this.logisticsAgent = logisticsAgent;
 		
-		Logger.log(LogLevel.INFORMATION, "ArePartsAvailable behaviour started.");
+		Logger.log(LogLevel.DEBUG, "ArePartsAvailable behaviour started.");
 	}
 
 	/**
@@ -119,16 +119,17 @@ public class ArePartsAvailable extends ReceiveBehaviour {
 			reply.setConversationId(message.getConversationId());
 			if ( allPartsAvailable) {
 				reply.setPerformative(ACLMessage.CONFIRM);
+				Logger.log(LogLevel.INFORMATION, "Parts are available.");
 			}
 			else{
 				reply.setPerformative(ACLMessage.DISCONFIRM);
+				Logger.log(LogLevel.ALERT, "Parts are NOT available.");
 			}
 			
 			logisticsAgent.send(reply);
-			
 			logisticsAgent.addBehaviour(new ArePartsAvailableInTime(logisticsAgent, message.getConversationId()));
 		} catch (UnreadableException e) {
-			
+			Logger.log(LogLevel.WARNING, "LogisticsAgent deleted.", e);
 			logisticsAgent.doDelete();
 		}
 	}

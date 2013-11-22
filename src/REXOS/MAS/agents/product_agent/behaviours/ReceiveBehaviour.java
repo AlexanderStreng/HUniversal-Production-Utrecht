@@ -44,6 +44,8 @@ import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 
 public class ReceiveBehaviour extends SimpleBehaviour{
 	private static final long serialVersionUID = 1L;
@@ -77,6 +79,8 @@ public class ReceiveBehaviour extends SimpleBehaviour{
 	 */
 	@Override
 	public void onStart(){
+		Logger.log(LogLevel.DEBUG, "ReceiveBehaviour behaviour started.");
+		
 		wakeupTime = (timeOut < 0 ? Long.MAX_VALUE : System.currentTimeMillis()
 				+ timeOut);
 	}
@@ -125,6 +129,7 @@ public class ReceiveBehaviour extends SimpleBehaviour{
 	 * @param m
 	 */
 	public void handle(ACLMessage m){
+		// TODO: handle message...?
 	}
 
 	/**

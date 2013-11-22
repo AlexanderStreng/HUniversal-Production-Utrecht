@@ -111,6 +111,8 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 
 	@Override
 	public void onStart(){
+		Logger.log(LogLevel.DEBUG, "RequiredModulesPresent behaviour started.");
+		
 		ACLMessage queryIFMessage = new ACLMessage(ACLMessage.QUERY_IF);
 		queryIFMessage.setConversationId(conversationId);
 		queryIFMessage.addReceiver(serviceAgent.getHardwareAgentAID());
@@ -119,7 +121,7 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 			try {
 				queryIFMessage.setContentObject(moduleGroupIds);
 			} catch (IOException e) {
-				
+				Logger.log(LogLevel.ERROR, "Couldn't set message content.", e);
 			}
 		}
 		serviceAgent.send(queryIFMessage);
@@ -134,10 +136,11 @@ public class RequiredModulesPresent extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		if(message != null) {
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			parentBehaviourCallback.callback(message, null);
 			serviceAgent.removeBehaviour(this);
 		} else {
-			
+			Logger.log(LogLevel.ERROR, "Message == null. Deleting ServiceAgent.");
 			serviceAgent.doDelete();
 		}
 	}

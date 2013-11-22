@@ -70,7 +70,7 @@ public class HeartBeatBehaviour extends WakerBehaviour {
 			heartbeatSent = true;
 		}
 		} catch(Exception e) {
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 		this.reset(TimeUnit.SECONDS.toMillis(HEARTBEAT_INTERVAL));
 		

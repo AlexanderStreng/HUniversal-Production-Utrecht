@@ -101,7 +101,9 @@ public class SchedulerBehaviour extends Behaviour {
 	 */
 	@Override
 	public void onStart() {
-		try {
+		try {			
+			Logger.log(LogLevel.DEBUG, "SchedulerBehaviour behaviour started.");
+			
 			// Shedule the PA with the equiplet agents in the current list.
 			_productAgent = (ProductAgent) myAgent;
 			_productAgent.getProduct().getProduction()
@@ -113,8 +115,7 @@ public class SchedulerBehaviour extends Behaviour {
 
 			// Notify the OverviewBehaviour that the scheduler is running. The
 			// overview behaviour will start the produceBehaviour so it's
-			// possible to
-			// schedule and produce at the same time.
+			// possible to schedule and produce at the same time.
 			this._bc.handleCallback(BehaviourStatus.RUNNING, null);
 
 			for (ProductionStep ps : psa) {
@@ -127,13 +128,13 @@ public class SchedulerBehaviour extends Behaviour {
 
 					if (equiplets != null && equiplets.size() != 0) 
 					{
-						
+						Logger.log(LogLevel.INFORMATION, "Added scheduler");
 						Scheduler(equiplets.keySet(), ps);
 						_schedulersStarted++;
 					} 
 					else 
 					{
-						
+						Logger.log(LogLevel.ERROR, "Equiplets are null (or size == 0)");
 						_isError = true;
 					}
 				}
@@ -141,7 +142,7 @@ public class SchedulerBehaviour extends Behaviour {
 		} 
 		catch (Exception e) 
 		{
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 	}
 
@@ -152,7 +153,7 @@ public class SchedulerBehaviour extends Behaviour {
 	public void action() {
 
 		if (_schedulersStarted == _schedulersCompleted && _isError == false) {
-			
+			Logger.log(LogLevel.INFORMATION, "Setting scheduler to complete"); //TODO
 			this._bc.handleCallback(BehaviourStatus.COMPLETED, null);
 			_isCompleted = true;
 		} else if (_isError) {
@@ -213,8 +214,6 @@ public class SchedulerBehaviour extends Behaviour {
 			// Change this
 			for (AID aid : equipletlist) 
 			{
-				
-				
 				bbc = new BlackboardClient(Configuration.getProperty(ConfigurationFiles.MONGO_DB_PROPERTIES, "collectiveDbIp"));
 				bbc.setDatabase(Configuration.getProperty(ConfigurationFiles.MONGO_DB_PROPERTIES, "collectiveDbName"));
 				bbc.setCollection(Configuration.getProperty(ConfigurationFiles.MONGO_DB_PROPERTIES, "equipletDirectoryName"));
@@ -229,7 +228,7 @@ public class SchedulerBehaviour extends Behaviour {
 				} 
 				else 
 				{
-					
+					Logger.log(LogLevel.ERROR, "There doesnt seem to be any equiplet available..");
 				}
 	
 				ArrayList<Schedule> schedules = new ArrayList<Schedule>();
@@ -257,14 +256,16 @@ public class SchedulerBehaviour extends Behaviour {
 				List<DBObject> plannedSteps = bbc.findDocuments(findquery);
 				
 				
+				int totalDuration = 0;
 				
 				for (int i = 0; i < plannedSteps.size(); i++) 
 				{
 					long startTime = ((BasicDBObject) plannedSteps.get(i).get("scheduleData")).getLong("startTime");
 					int duration = ((BasicDBObject) plannedSteps.get(i).get("scheduleData")).getInt("duration");
 					schedules.add(new Schedule(startTime, duration, aid));
-					
+					totalDuration += duration;
 				}
+				Logger.log(LogLevel.NOTIFICATION, "Total duration of the planned steps: %d time slots", totalDuration);
 	
 				// check within every schedule of the 'schedules' array for free
 				// timeslots and add them to the 'freetimeslot' array
@@ -309,7 +310,7 @@ public class SchedulerBehaviour extends Behaviour {
 					} 
 					else 
 					{
-						
+						Logger.log(LogLevel.ERROR, "FreeTimeSlotEq != null");
 					}
 				}
 			}
@@ -339,9 +340,9 @@ public class SchedulerBehaviour extends Behaviour {
 
 		} catch (InvalidDBNamespaceException
 				| GeneralMongoException e) {
-			
-		} catch (IOException e1){
-			
+			Logger.log(LogLevel.ERROR, "Database exception at scheduling", e);
+		} catch (IOException e){
+			Logger.log(LogLevel.ERROR, "Message content exception at scheduling", e);
 		}
 	}
 

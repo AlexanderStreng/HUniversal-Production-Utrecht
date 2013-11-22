@@ -417,7 +417,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 	@Override
 	public void onMessage(MongoOperation operation, OplogEntry entry) {
 		try {
-			Logger.log(LogLevel.DEBUG, "Received message %s" , entry.getNamespace().split("\\.")[1]);
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			
 			switch(entry.getNamespace().split("\\.")[1]) {
 				case "ProductStepsBlackBoard":
@@ -453,12 +453,12 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 								responseMessage.setOntology("Planned");
 								responseMessage.setPerformative(ACLMessage.CONFIRM);
 								responseMessage.setContentObject(scheduleData.getStartTime());
-
+								
 
 							} catch(IOException e) {
 								responseMessage.setPerformative(ACLMessage.DISCONFIRM);
 								responseMessage.setContent("An error occured in the planning/please reschedule");
-								
+								Logger.log(LogLevel.ERROR, "Message is empty...", e);
 							}
 							break;
 						case FAILED:
@@ -494,7 +494,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 						default:
 							break;
 					}
-					Logger.log(LogLevel.DEBUG, "Sent message \"%s\" to %s", responseMessage.getOntology(), responseMessage.getAllReceiver().toString());
+					Logger.log(LogLevel.DEBUG, "Sent message \"%s\" to %s", responseMessage.getOntology(), productStep.getProductAgentId().getName());
 					send(responseMessage);
 					break;
 				case "equipletState":
@@ -524,7 +524,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			}
 		} catch(GeneralMongoException | InvalidDBNamespaceException | IOException e) {
 			// TODO handle error
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection lost.", e);
 		}
 	}
 
@@ -541,7 +541,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 		// TODO when the equipletCommand blackboard has been updated to have a equipletId like field this search query
 		// should be adapted.
 
-		Logger.log(LogLevel.INFORMATION, "Desired state set to: #%d");
+		Logger.log(LogLevel.DEBUG, "Desired state set to: #%d", state.getValue());
 		
 		// desiredStateBBClient.updateDocuments(new BasicDBObject("id", equipletId), new BasicDBObject("$set",
 		// new BasicDBObject("desiredState", state.getValue())));

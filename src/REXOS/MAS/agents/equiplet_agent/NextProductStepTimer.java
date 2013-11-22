@@ -184,7 +184,7 @@ public class NextProductStepTimer extends Timer {
 					Logger.log(LogLevel.DEBUG, "Earliest step is not before current step (%d)", scheduleData.getStartTime());
 				}
 			} else {
-				Logger.log(LogLevel.DEBUG, "no more steps on PLANNED");
+				Logger.log(LogLevel.DEBUG, "no more steps PLANNED");
 				setNextUsedTimeSlot(-1);
 			}
 		} catch(GeneralMongoException | InvalidDBNamespaceException e) {

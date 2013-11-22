@@ -82,7 +82,7 @@ public class DummyModule extends Module {
 	 * 		This has only been added to be able to add a log line
 	 */
 	public DummyModule(){
-		Logger.log(LogLevel.INFORMATION, "DummyModule created.");
+		Logger.log(LogLevel.DEBUG, "DummyModule created.");
 	}
 	
 	/**
@@ -125,7 +125,7 @@ public class DummyModule extends Module {
 		// get the new position parameters from the parameters
 		double extraSize = 15;
 		
-		Logger.log(LogLevel.INFORMATION, "Filling placeholders.");
+		Logger.log(LogLevel.DEBUG, "Filling placeholders.");
 		
 		if(parameters.containsField("extra_size"))
 		{

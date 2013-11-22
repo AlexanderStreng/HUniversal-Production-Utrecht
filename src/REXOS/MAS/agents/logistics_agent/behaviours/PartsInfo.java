@@ -90,7 +90,7 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 	public PartsInfo(LogisticsAgent logisticsAgent, String conversationId) {
 		this(logisticsAgent, 2000, conversationId);
 		
-		Logger.log(LogLevel.INFORMATION, "PartsInfo behaviour started.");
+		Logger.log(LogLevel.DEBUG, "PartsInfo behaviour started.");
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 		super(logisticsAgent, millis, MessageTemplate.and(MESSAGE_TEMPLATE,
 				MessageTemplate.MatchConversationId(conversationId)));
 		this.logisticsAgent = logisticsAgent;
-		
+		Logger.log(LogLevel.DEBUG, "PartsInfo behaviour started.");
 	}
 	
 
@@ -116,6 +116,7 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		if(message != null) {
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			try {
 				
 				Part[] parts = (Part[]) message.getContentObject();
@@ -150,7 +151,7 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 				reply.setContentObject(partParameters);
 				logisticsAgent.send(reply);
 			} catch (UnreadableException | IOException e) {
-				
+				Logger.log(LogLevel.ERROR, "Message unreadable.", e);
 				logisticsAgent.doDelete();
 			}
 		} else {

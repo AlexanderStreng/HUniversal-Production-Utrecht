@@ -111,7 +111,7 @@ public class FillPlaceholders extends ReceiveBehaviour {
 		this.hardwareAgent = hardwareAgent;
 		this.moduleFactory = moduleFactory;
 		
-		Logger.log(LogLevel.INFORMATION, "FillPlaceholders behaviour started.");
+		Logger.log(LogLevel.DEBUG, "FillPlaceholders behaviour started.");
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class FillPlaceholders extends ReceiveBehaviour {
 			ObjectId serviceStepId = (ObjectId) message.getContentObject();
 			FillStepPlaceholders(serviceStepId);
 		} catch(UnreadableException e) {
-			
+			Logger.log(LogLevel.ERROR, "HardwareAgent deleted.", e);
 			myAgent.doDelete();
 		}
 	}
@@ -174,7 +174,7 @@ public class FillPlaceholders extends ReceiveBehaviour {
 		}
 		catch(InvalidDBNamespaceException | GeneralMongoException e) 
 		{
-			
+			Logger.log(LogLevel.ERROR, "HardwareAgent deleted.", e);
 			hardwareAgent.doDelete();
 		}
 	}

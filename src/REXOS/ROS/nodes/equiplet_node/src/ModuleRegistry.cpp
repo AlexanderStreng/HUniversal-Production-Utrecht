@@ -101,6 +101,13 @@ void ModuleRegistry::onInstructionStepCompleted(
 
 void ModuleRegistry::onModuleDied(ModuleProxy* moduleProxy){
 	ROS_WARN("Module has died! :(");
+	for(std::vector<ModuleProxy*>::iterator it = registeredModules.begin(); it != registeredModules.end(); it++){
+		if(*it == moduleProxy){
+			ROS_INFO("found me");
+			registeredModules.erase(it);
+			break;
+		}
+	}
 }
 
 } /* namespace equiplet_node */

@@ -110,7 +110,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		this.hardwareAgent = hardwareAgent;
 		this.moduleFactory = moduleFactory;
 		
-		Logger.log(LogLevel.INFORMATION, "EvaluateDuration behaviour started.");
+		Logger.log(LogLevel.DEBUG, "EvaluateDuration behaviour started.");
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 			reply.setOntology("ServiceStepDuration");
 			hardwareAgent.send(reply);
 		} catch(UnreadableException | IOException e) {
-			e.printStackTrace();
+			Logger.log(LogLevel.ERROR, "HardwareAgent deleted.", e);
 			hardwareAgent.doDelete();
 		}
 	}
@@ -140,6 +140,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 	/**
 	 * Function for evaluating the step duration
 	 * 
+	 * @TODO convert to camelCase instead of PascalCase
 	 * @param serviceStepId the serviceStep to evaluate.
 	 */
 	public void EvaluateStepDuration(ObjectId serviceStepId) {
@@ -172,7 +173,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 					equipletStep.setNextEquipletStep(next);
 					next = equipletStepsBBClient.insertDocumentUnsafe(equipletStep.toBasicDBObject());
 				}
-				
+				Logger.log(LogLevel.INFORMATION, "Evaluated stepDuration will take %d time slots.", stepDuration);
 				// get the scheduleData and add the duration.
 				ScheduleData schedule = serviceStep.getScheduleData();
 				schedule.setDuration(stepDuration);
@@ -194,7 +195,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 		} 
 		catch(InvalidDBNamespaceException | GeneralMongoException e) 
 		{
-			
+			Logger.log(LogLevel.ERROR, "HardwareAgent deleted.", e);
 			hardwareAgent.doDelete();
 		}
 	}
