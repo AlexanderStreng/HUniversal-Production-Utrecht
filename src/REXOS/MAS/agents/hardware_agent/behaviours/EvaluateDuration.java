@@ -140,6 +140,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 	/**
 	 * Function for evaluating the step duration
 	 * 
+	 * @TODO convert to camelCase instead of PascalCase
 	 * @param serviceStepId the serviceStep to evaluate.
 	 */
 	public void EvaluateStepDuration(ObjectId serviceStepId) {
@@ -172,7 +173,7 @@ public class EvaluateDuration extends ReceiveBehaviour {
 					equipletStep.setNextEquipletStep(next);
 					next = equipletStepsBBClient.insertDocumentUnsafe(equipletStep.toBasicDBObject());
 				}
-				
+				Logger.log(LogLevel.INFORMATION, "Evaluated stepDuration will take %d time slots.", stepDuration);
 				// get the scheduleData and add the duration.
 				ScheduleData schedule = serviceStep.getScheduleData();
 				schedule.setDuration(stepDuration);

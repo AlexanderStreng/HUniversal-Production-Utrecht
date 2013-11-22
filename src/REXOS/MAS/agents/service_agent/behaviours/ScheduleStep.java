@@ -92,6 +92,7 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 	public ScheduleStep(ServiceAgent serviceAgent) {
 		super(serviceAgent, MESSAGE_TEMPLATE);
 		this.serviceAgent = serviceAgent;
+		Logger.log(LogLevel.DEBUG, "ScheduleStep behaviour created.");
 	}
 
 	/**
@@ -108,8 +109,8 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 	public void handle(ACLMessage message) {
 		if(message != null) {
 			try {
+				Logger.log(LogLevel.DEBUG, "Received message.");
 				
-
 				ProductStep productStep =
 						new ProductStep((BasicDBObject) serviceAgent.getProductStepBBClient().findDocumentById(
 								(ObjectId) message.getContentObject()));
@@ -124,7 +125,7 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 			//	sendMsg.setContentObject(productStep);
 			//	agent.send(sendMsg);
 			} catch(InvalidDBNamespaceException | GeneralMongoException | UnreadableException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Databasde connection error.", e);
 				serviceAgent.doDelete();
 			}
 		}
@@ -164,7 +165,5 @@ public class ScheduleStep extends ReceiveBehaviour implements ParentBehaviourCal
 			break;
 			
 		}
-		
-		
 	}
 }

@@ -92,6 +92,7 @@ public class CanPerformProductionStep extends ReceiveBehaviour implements Parent
 	public CanPerformProductionStep(ServiceAgent serviceAgent) {
 		super(serviceAgent, MESSAGE_TEMPLATE);
 		this.serviceAgent = serviceAgent;
+		Logger.log(LogLevel.DEBUG, "CanPerformProductionStep behaviour created.");
 	}
 
 	/**
@@ -107,6 +108,7 @@ public class CanPerformProductionStep extends ReceiveBehaviour implements Parent
 	@Override
 	public void handle(ACLMessage message) {
 		
+		Logger.log(LogLevel.DEBUG, "Received message.");
 		if ( message.getPerformative() == ACLMessage.QUERY_IF){
 			try {
 				ObjectId productStepId = (ObjectId) message.getContentObject();
@@ -145,7 +147,7 @@ public class CanPerformProductionStep extends ReceiveBehaviour implements Parent
 					getAgent().send(disconfirmReply);
 				}
 			} catch(UnreadableException | InvalidDBNamespaceException | GeneralMongoException e) {
-				
+				Logger.log(LogLevel.CRITICAL, "Database connection error.", e);
 			}
 		}
 	}

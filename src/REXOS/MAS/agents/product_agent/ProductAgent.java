@@ -83,6 +83,7 @@ public class ProductAgent extends Agent {
 	 */
 	public ProductAgent() {
 		_status = AgentStatus.STARTING;
+		Logger.log(LogLevel.DEBUG, "ProductAgent created.");
 	}
 
 	/**
@@ -98,6 +99,7 @@ public class ProductAgent extends Agent {
 			addBehaviour(_overviewBehaviour);
 			
 		} catch (IllegalArgumentException e) {
+			Logger.log(LogLevel.ERROR, "No arguments found by loadArguments.", e);
 		}
 	}
 
@@ -185,8 +187,7 @@ public class ProductAgent extends Agent {
 
 					this._properties = pap;
 				}catch(NullPointerException | IllegalArgumentException e){
-					
-					e.printStackTrace();
+					Logger.log(LogLevel.ERROR, "", e);
 				}
 			} else if (args[0].getClass() == ProductAgentProperties.class) {
 				this._properties = (ProductAgentProperties) args[0];

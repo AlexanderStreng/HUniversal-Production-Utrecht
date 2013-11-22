@@ -105,6 +105,7 @@ public class PickAndPlaceService extends Service {
 				return false;
 			}
 		} catch (IllegalArgumentException e) {
+			Logger.log(LogLevel.ERROR, "Illegal Arguments.", e);
 			return false;
 		}
 		return false;
@@ -172,6 +173,7 @@ public class PickAndPlaceService extends Service {
 
 		if (supplyCrate == null || productCrate == null) {
 			// error = one or more crates were not returned
+			Logger.log(LogLevel.ALERT, "One or more crates weren't found.");
 		}
 
 		for (ServiceStep ss : serviceSteps) {
@@ -224,6 +226,7 @@ public class PickAndPlaceService extends Service {
 						}
 					} else {
 						// error - no ball part
+						Logger.log(LogLevel.ALERT, "No ball part...");
 					}
 					break;
 				case 2: // Place - Product

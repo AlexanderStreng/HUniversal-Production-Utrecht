@@ -81,10 +81,11 @@ public class SocketBehaviour extends WakerBehaviour implements
 	public SocketBehaviour(Agent a, Callback callback) {
 		super(a, 4500);
 		try {
+			Logger.log(LogLevel.DEBUG, "SocketBehaviour behaviour created.");
 			_callback = callback;
 			_gsonParser = new Gson();
 		} catch (Exception e) {
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 	}
 	
@@ -114,7 +115,7 @@ public class SocketBehaviour extends WakerBehaviour implements
 			}
 		} catch (Exception e) {
 			isConnected = false;
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 		this.reset(4500);
 	}
@@ -130,6 +131,7 @@ public class SocketBehaviour extends WakerBehaviour implements
 			}
 		} catch (Exception e) {
 			isConnected = false;
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 	}
 
@@ -150,7 +152,7 @@ public class SocketBehaviour extends WakerBehaviour implements
 			}
 		} catch (Exception e) {
 			isConnected = false;
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 	}
 
@@ -167,7 +169,7 @@ public class SocketBehaviour extends WakerBehaviour implements
 			}
 		} catch (Exception e) {
 			isConnected = false;
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 	}
 
@@ -202,7 +204,7 @@ public class SocketBehaviour extends WakerBehaviour implements
 				outputStream.println("heart");
 			}
 		} catch (Exception e) {
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 		}
 	}
 
@@ -220,7 +222,7 @@ public class SocketBehaviour extends WakerBehaviour implements
 			this.isConnected = false;
 			this.resetConnection();
 		} catch (Exception e) {
-			
+			Logger.log(LogLevel.ERROR, "Gotta catch 'em all...", e);
 			//TODO Log error
 		}
 	}

@@ -154,7 +154,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 	@Override
 	public void setup() {
 		
-
+		Logger.log(LogLevel.DEBUG, "ServiceAgent created.");
 		// handle arguments given to this agent
 		Object[] args = getArguments();
 		DbData dbData = (DbData) args[0];
@@ -174,7 +174,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 			hardwareAgentCnt.start();
 			hardwareAgentAID = new AID(hardwareAgentCnt.getName(), AID.ISGUID);
 		} catch(StaleProxyException e) {
-			
+			Logger.log(LogLevel.ERROR, "Stale proxy error.", e);
 			doDelete();
 		}
 
@@ -196,7 +196,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 			serviceStepBBClient.subscribe(statusSubscription);
 			serviceStepBBClient.removeDocuments(new BasicDBObject());
 		} catch(UnknownHostException | GeneralMongoException | InvalidDBNamespaceException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection error. Deleting ServiceAgent.", e);
 			doDelete();
 		}
 
@@ -221,7 +221,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 	@Override
 	public void takeDown() {
 		
-		
+		Logger.log(LogLevel.DEBUG, "takeDown() called.");
 		productStepBBClient.unsubscribe(statusSubscription);
 		serviceStepBBClient.unsubscribe(statusSubscription);
 		
@@ -242,7 +242,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 			
 			serviceStepBBClient.removeDocuments(new BasicDBObject());
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection error.", e);
 		}
 
 		ACLMessage message = new ACLMessage(ACLMessage.INFORM);
@@ -280,7 +280,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 				send(message);
 			}
 		} catch(InvalidDBNamespaceException | GeneralMongoException | IOException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection error.", e);
 		}
 	}
 
@@ -407,7 +407,7 @@ public class ServiceAgent extends Agent implements BlackboardSubscriber {
 					break;
 			}
 		} catch(InvalidDBNamespaceException | GeneralMongoException e) {
-			
+			Logger.log(LogLevel.CRITICAL, "Database connection error. Deleting ServiceAgent.", e);
 			doDelete();
 		}
 	}

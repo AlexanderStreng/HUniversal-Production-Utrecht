@@ -118,6 +118,8 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 
 	@Override
 	public void onStart(){
+		Logger.log(LogLevel.DEBUG, "SerivceStepDuration behaviour started.");
+		
 		ACLMessage responseMessage = new ACLMessage(ACLMessage.QUERY_REF);
 		responseMessage.addReceiver(serviceAgent.getHardwareAgentAID());
 		responseMessage.setConversationId(conversationId);
@@ -125,7 +127,7 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 			try {
 				responseMessage.setContentObject(objectId);
 			} catch (IOException e) {
-				
+				Logger.log(LogLevel.ERROR, "Couldn't set message content.", e);
 			}
 		}
 		responseMessage.setOntology("ServiceStepDuration");
@@ -145,6 +147,8 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		if(message != null) {
+			Logger.log(LogLevel.DEBUG, "Received message.");
+			
 			try {
 				ServiceStep serviceStep = new ServiceStep();
 				ObjectId nextStep = (ObjectId) message.getContentObject();
@@ -155,15 +159,13 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 					nextStep = serviceStep.getNextServiceStep();
 					
 				}
-
-				
+				Logger.log(LogLevel.NOTIFICATION, "Total duration of ServiceStep: %d time slots.", duration);
 				
 				ObjectId productStepId = serviceStep.getProductStepId();
 				ProductStep productStep =
 						new ProductStep((BasicDBObject) serviceAgent.getProductStepBBClient().findDocumentById(productStepId));
 				ScheduleData scheduleData = productStep.getScheduleData();
 				scheduleData.setDuration(duration);
-
 				
 				serviceAgent.getProductStepBBClient().updateDocuments(new BasicDBObject("_id", productStepId),
 						new BasicDBObject("$set", new BasicDBObject("scheduleData", scheduleData.toBasicDBObject())));
@@ -172,10 +174,10 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 				serviceAgent.removeBehaviour(this);
 				
 			} catch(InvalidDBNamespaceException | GeneralMongoException | UnreadableException e) {
-				
+				Logger.log(LogLevel.ERROR, "Database connecgtion error.", e);
 			}
 		} else {
-			
+			Logger.log(LogLevel.WARNING, "Message == null. Deleting ServiceAgent.");
 			serviceAgent.doDelete();
 		}
 	}

@@ -36,6 +36,8 @@ package agents.service_agent.behaviours;
 
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.service_agent.ServiceAgent;
 import agents.shared_behaviours.ReceiveBehaviour;
 
@@ -65,6 +67,7 @@ public class OtherAgentDied extends ReceiveBehaviour {
 		super(serviceAgent, MessageTemplate.or(MessageTemplate.MatchOntology("EquipletAgentDied"),
 				MessageTemplate.MatchOntology("HardwareAgentDied")));
 		this.serviceAgent = serviceAgent;
+		Logger.log(LogLevel.DEBUG, "OtherAgentDied behaviour created.");
 	}
 
 	/* (non-Javadoc)
@@ -72,11 +75,13 @@ public class OtherAgentDied extends ReceiveBehaviour {
 	@Override
 	public void handle(ACLMessage message) {
 		if(message.getOntology().equals("EquipletAgentDied")) {
+			Logger.log(LogLevel.DEBUG, "Received message.");
 			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
 			msg.addReceiver(serviceAgent.getHardwareAgentAID());
 			msg.setOntology("ServiceAgentDied");
 			serviceAgent.send(msg);
 		} else {
+			Logger.log(LogLevel.WARNING, "Unknown/Unexpected message received.");
 			serviceAgent.doDelete();
 		}
 	}
