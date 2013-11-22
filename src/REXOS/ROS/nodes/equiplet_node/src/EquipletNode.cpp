@@ -58,16 +58,17 @@ EquipletNode::EquipletNode(int id, std::string blackboardIp) :
 	equipletStepBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, std::string("EQ") + std::to_string(id), "EquipletStepsBlackBoard");
 	equipletStepSubscription = new Blackboard::FieldUpdateSubscription("status", *this);
 	equipletStepSubscription->addOperation(Blackboard::SET);
+	directEquipletStepSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
 	equipletStepBlackboardClient->subscribe(*equipletStepSubscription);
+	//equipletStepBlackboardClient->subscribe(*directEquipletStepSubscription);
 	subscriptions.push_back(equipletStepSubscription);
+	//subscriptions.push_back(directEquipletStepSubscription);
 	sleep(1);
 
 	equipletCommandBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, STATE_BLACKBOARD, COLLECTION_EQUIPLET_COMMANDS);
 	equipletCommandSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
     equipletCommandSubscriptionSet = new Blackboard::BasicOperationSubscription(Blackboard::UPDATE, *this);
 	equipletCommandBlackboardClient->subscribe(*equipletCommandSubscription);
-	sleep(1);
-
     equipletCommandBlackboardClient->subscribe(*equipletCommandSubscriptionSet);
 	subscriptions.push_back(equipletCommandSubscription);
 	subscriptions.push_back(equipletCommandSubscriptionSet);
@@ -80,6 +81,7 @@ EquipletNode::EquipletNode(int id, std::string blackboardIp) :
 	sleep(1);
 
 	equipletStateBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, STATE_BLACKBOARD, COLLECTION_EQUIPLET_STATE);
+	sleep(1);
 	
 	std::cout << "Connected equiplet_node." << std::endl;
 }
@@ -112,7 +114,7 @@ void EquipletNode::onMessage(Blackboard::BlackboardSubscription & subscription, 
 	mongo::OID targetObjectId;
 	oplogEntry.getTargetObjectId(targetObjectId);
 
-	if(&subscription == equipletStepSubscription) {
+	if(&subscription == equipletStepSubscription || &subscription == directEquipletStepSubscription) {
 		JSONNode n = libjson::parse(equipletStepBlackboardClient->findDocumentById(targetObjectId).jsonString());
 	    rexos_datatypes::EquipletStep * step = new rexos_datatypes::EquipletStep(n);
 	    //We only need to handle the step if its status is 'WAITING'

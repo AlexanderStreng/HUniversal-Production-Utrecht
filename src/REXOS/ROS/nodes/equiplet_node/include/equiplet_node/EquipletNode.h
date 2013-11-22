@@ -114,6 +114,7 @@ private:
 
 	Blackboard::BlackboardCppClient *equipletStepBlackboardClient;
 	Blackboard::FieldUpdateSubscription* equipletStepSubscription;
+	Blackboard::BlackboardSubscription* directEquipletStepSubscription;
 
 	Blackboard::BlackboardCppClient *equipletCommandBlackboardClient;
 	Blackboard::BlackboardSubscription* equipletCommandSubscription; 
