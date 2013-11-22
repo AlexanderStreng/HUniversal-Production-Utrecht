@@ -97,7 +97,7 @@ private:
 
 	void handleEquipletStep(rexos_datatypes::EquipletStep * step, mongo::OID targetObjectId);
 
-	void handleDirectMoveCommand(rexos_datatypes::EquipletStep * step, mongo::OID targetObjectId);
+	void handleDirectMoveCommand(int moduleId, mongo::OID targetObjectId);
 	/**
 	 * @var int equipletId
 	 * The id of the equiplet

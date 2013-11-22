@@ -157,7 +157,6 @@ void deltaRobotNodeNamespace::DeltaRobotNode::onSetInstruction(const rexos_state
 		}
 
 	} else {
-		// Z Safe Movement
 		moveVector.set(payloadPoint.x, payloadPoint.y, payloadPoint.z);
 	}
 

@@ -19,7 +19,7 @@ insert into ModuleType(
 		\"effectorRadius\" : 46.19,
 		\"ankleLength\" : 250.0,
 		\"hipAnleMaxAngleDegrees\" : 22.0,
-		\"motorFromZeroToTopAngleDegrees\" : 20.0,
+		\"motorFromZeroToTopAngleDegrees\" : 19.0,
 		\"boundaryBoxMinX\" : -200.0,
 		\"boundaryBoxMaxX\" : 200.0,
 		\"boundaryBoxMinY\" : -200.0,
@@ -39,7 +39,7 @@ insert into ModuleType(
 	}
 }", 1, "", 1, ""),
 ("HU", "work_plane_type_A", "{
-	\"midPointX\" : 175.0,
+	\"midPointX\" : 176.0,
 	\"midPointY\" : -200.0,
 	\"midPointZ\" : 33.33,
 	\"topLeftValue\" : \"_WP_TL\",
@@ -89,19 +89,19 @@ insert into Module(
 insert into ModuleCalibration (id, properties) values
 (1, "{
 	\"distCoeffs\" : {
-		\"\" : -0.584008,
-		\"\" : -4.858694,
-		\"\" : -0.009096,
-		\"\" : -0.016636,
-		\"\" : 40.603377
+		\"\" : -0.594898,
+		\"\" : -0.387745,
+		\"\" : -0.017184,
+		\"\" : 0.002981,
+		\"\" : 3.614891
 	},
 	\"cameraMatrix\" : {
-		\"\" : 846.623497,
+		\"\" : 768.621769,
 		\"\" : 0,
-		\"\" : 358.965449,
+		\"\" : 332.302605,
 		\"\" : 0,
-		\"\" : 851.128986,
-		\"\" : 222.244692,
+		\"\" : 765.130044,
+		\"\" : 261.406187,
 		\"\" : 0,
 		\"\" : 0,
 		\"\" : 1
