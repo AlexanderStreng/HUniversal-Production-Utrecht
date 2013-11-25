@@ -112,7 +112,7 @@ public class ArePartsAvailableInTime extends ReceiveOnceBehaviour {
 				logisticsAgent.send(reply);
 				logisticsAgent.addBehaviour(new PartsInfo(logisticsAgent, message
 						.getConversationId()));
-				Logger.log(LogLevel.ALERT, "Parts are available in time.");
+				Logger.log(LogLevel.INFORMATION, "Parts are available in time.");
 			} catch (UnreadableException e) {
 				Logger.log(LogLevel.ERROR, "Message unreadable!", e);
 				logisticsAgent.doDelete();
