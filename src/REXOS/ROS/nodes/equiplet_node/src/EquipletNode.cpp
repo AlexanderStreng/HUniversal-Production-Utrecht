@@ -55,9 +55,7 @@ EquipletNode::EquipletNode(int id, std::string blackboardIp) :
 		directMoveBlackBoardClient(NULL),
 		scada(this, &moduleRegistry) 
 {
-	std::cout << "EquipletNode_Constructor called." << std::endl;
-
-	equipletStepBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, "EQ1", "EquipletStepsBlackBoard");
+	equipletStepBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, std::string("EQ") + std::to_string(id), "EquipletStepsBlackBoard");
 	equipletStepSubscription = new Blackboard::FieldUpdateSubscription("status", *this);
 	equipletStepSubscription->addOperation(Blackboard::SET);
 	equipletStepBlackboardClient->subscribe(*equipletStepSubscription);
@@ -75,7 +73,7 @@ EquipletNode::EquipletNode(int id, std::string blackboardIp) :
 	subscriptions.push_back(equipletCommandSubscriptionSet);
 	sleep(1);
 
-	directMoveBlackBoardClient = new Blackboard::BlackboardCppClient(blackboardIp, "EQ1", "DirectMoveStepsBlackBoard");
+	directMoveBlackBoardClient = new Blackboard::BlackboardCppClient(blackboardIp, std::string("EQ") + std::to_string(id), "DirectMoveStepsBlackBoard");
 	directMoveSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
 	directMoveBlackBoardClient->subscribe(*directMoveSubscription);
 	subscriptions.push_back(directMoveSubscription);
@@ -127,9 +125,7 @@ void EquipletNode::onMessage(Blackboard::BlackboardSubscription & subscription, 
 		ROS_INFO("Received equiplet statemachine command");
     	handleEquipletCommand(libjson::parse(oplogEntry.getUpdateDocument().jsonString()));
 	} else if(&subscription == directMoveSubscription) {
-		JSONNode n = libjson::parse(directMoveBlackBoardClient->findDocumentById(targetObjectId).jsonString());
-		rexos_datatypes::EquipletStep * step = new rexos_datatypes::EquipletStep(n);
-		handleDirectMoveCommand(step, targetObjectId);
+		handleDirectMoveCommand(1, targetObjectId);
 	}
 }
 
@@ -164,10 +160,9 @@ void EquipletNode::handleEquipletStep(rexos_datatypes::EquipletStep * step, mong
 	}
 }
 
-void EquipletNode::handleDirectMoveCommand(rexos_datatypes::EquipletStep * step, mongo::OID targetObjectId){
+void EquipletNode::handleDirectMoveCommand(int moduleId, mongo::OID targetObjectId){
 		std::cout << "Got an update! : " << directMoveBlackBoardClient->findDocumentById(targetObjectId).jsonString() << std::endl;
-		ModuleProxy *prox = moduleRegistry.getModule(step->getModuleId());
-		prox->changeState(rexos_statemachine::STATE_NORMAL);
+		ModuleProxy *prox = moduleRegistry.getModule(moduleId);
 	    prox->setInstruction(targetObjectId.toString(), libjson::parse(directMoveBlackBoardClient->findDocumentById(targetObjectId).jsonString()));
 		//still need to remove the step tho
 }
@@ -214,7 +209,7 @@ void EquipletNode::onInstructionStepCompleted(ModuleProxy* moduleProxy, std::str
 
 	if(completed) {
     	equipletStepBlackboardClient->updateDocumentById(targetObjectId, "{ $set : {status: \"DONE\" } } ");
-    	std::cout << "Done with step. Update status on BB to done." << std::endl;
+    	std::cout << "Done with step with id: " << id << std::endl << " Updated status on BB to done." << std::endl;
 	} else {
     	equipletStepBlackboardClient->updateDocumentById(targetObjectId, "{ $set : {status: \"FAILED\" } } ");
 	}
