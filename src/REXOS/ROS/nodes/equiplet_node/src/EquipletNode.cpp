@@ -55,31 +55,41 @@ EquipletNode::EquipletNode(int id, std::string blackboardIp) :
 		directMoveBlackBoardClient(NULL),
 		scada(this, &moduleRegistry) 
 {
+	ROS_INFO("A");
 	equipletStepBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, std::string("EQ") + std::to_string(id), "EquipletStepsBlackBoard");
 	equipletStepSubscription = new Blackboard::FieldUpdateSubscription("status", *this);
 	equipletStepSubscription->addOperation(Blackboard::SET);
 	directEquipletStepSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
 	equipletStepBlackboardClient->subscribe(*equipletStepSubscription);
-	//equipletStepBlackboardClient->subscribe(*directEquipletStepSubscription);
+	ROS_INFO("B");
+	sleep(1);
+	equipletStepBlackboardClient->subscribe(*directEquipletStepSubscription);
 	subscriptions.push_back(equipletStepSubscription);
-	//subscriptions.push_back(directEquipletStepSubscription);
+	subscriptions.push_back(directEquipletStepSubscription);
 	sleep(1);
 
+	ROS_INFO("C");
 	equipletCommandBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, STATE_BLACKBOARD, COLLECTION_EQUIPLET_COMMANDS);
 	equipletCommandSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
-    equipletCommandSubscriptionSet = new Blackboard::BasicOperationSubscription(Blackboard::UPDATE, *this);
+	ROS_INFO("C");
+	equipletCommandSubscriptionSet = new Blackboard::BasicOperationSubscription(Blackboard::UPDATE, *this);
 	equipletCommandBlackboardClient->subscribe(*equipletCommandSubscription);
-    equipletCommandBlackboardClient->subscribe(*equipletCommandSubscriptionSet);
+	ROS_INFO("C");
+	sleep(1);
+	equipletCommandBlackboardClient->subscribe(*equipletCommandSubscriptionSet);
 	subscriptions.push_back(equipletCommandSubscription);
+	ROS_INFO("C");
 	subscriptions.push_back(equipletCommandSubscriptionSet);
 	sleep(1);
 
+	ROS_INFO("D");
 	directMoveBlackBoardClient = new Blackboard::BlackboardCppClient(blackboardIp, std::string("EQ") + std::to_string(id), "DirectMoveStepsBlackBoard");
 	directMoveSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
 	directMoveBlackBoardClient->subscribe(*directMoveSubscription);
 	subscriptions.push_back(directMoveSubscription);
 	sleep(1);
 
+	ROS_INFO("E");
 	equipletStateBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, STATE_BLACKBOARD, COLLECTION_EQUIPLET_STATE);
 	sleep(1);
 	
