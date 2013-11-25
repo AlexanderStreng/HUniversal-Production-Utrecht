@@ -76,7 +76,7 @@ public class DeltaRobotModule extends Module {
 	 * @var int TIMESLOTS_NEEDED_PER_STEP
 	 * 		A static value with the timeslots needed per step.
 	 */
-	private static final int TIMESLOTS_NEEDED_PER_STEP = 6;
+	private static final int TIMESLOTS_NEEDED_PER_STEP = 59; // 60 pl0x
 	
 	/**
 	 * Default constructor for DeltaRobotModule

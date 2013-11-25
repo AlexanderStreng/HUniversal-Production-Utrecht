@@ -24,7 +24,7 @@ public class SubInformerBehaviour extends agents.shared_behaviours.ReceiveBehavi
 	private InformerBehaviour _parentBehaviour;
 	private String _conversationId;
 
-	private static int SUBINFORMER_TIMEOUT = 10000;
+	private static int SUBINFORMER_TIMEOUT = 50000;
 
 	private int _currentState = 0;
 

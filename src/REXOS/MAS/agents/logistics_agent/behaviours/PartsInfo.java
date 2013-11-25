@@ -88,7 +88,7 @@ public class PartsInfo extends ReceiveOnceBehaviour {
 	 * @param conversationId The conversationId that should be used for this behaviour.
 	 */
 	public PartsInfo(LogisticsAgent logisticsAgent, String conversationId) {
-		this(logisticsAgent, 2000, conversationId);
+		this(logisticsAgent, 50000, conversationId);
 		
 		Logger.log(LogLevel.DEBUG, "PartsInfo behaviour started.");
 	}

@@ -72,7 +72,7 @@ public class ArePartsAvailableInTime extends ReceiveOnceBehaviour {
 	 *            The conversationId that should be used for this behaviour.
 	 */
 	public ArePartsAvailableInTime(LogisticsAgent logisticsAgent, String conversationId) {
-		this(logisticsAgent, 2000, conversationId);
+		this(logisticsAgent, 50000, conversationId);
 		Logger.log(LogLevel.DEBUG, "ArePartsAvailableInTime behaviour started.");
 	}
 
