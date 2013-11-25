@@ -118,7 +118,7 @@ public class ServiceStepDuration extends ReceiveBehaviour {
 
 	@Override
 	public void onStart(){
-		Logger.log(LogLevel.DEBUG, "SerivceStepDuration behaviour started.");
+		Logger.log(LogLevel.DEBUG, "ServiceStepDuration behaviour started.");
 		
 		ACLMessage responseMessage = new ACLMessage(ACLMessage.QUERY_REF);
 		responseMessage.addReceiver(serviceAgent.getHardwareAgentAID());

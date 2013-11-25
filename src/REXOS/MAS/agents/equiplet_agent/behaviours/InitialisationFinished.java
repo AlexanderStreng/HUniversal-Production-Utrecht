@@ -100,7 +100,7 @@ public class InitialisationFinished extends ReceiveOnceBehaviour implements Blac
 	 * @param equipletAgent The agent for this behaviour
 	 */
 	public InitialisationFinished(EquipletAgent equipletAgent) {
-		super(equipletAgent, 3000, MESSAGE_TEMPLATE);
+		super(equipletAgent, 50000, MESSAGE_TEMPLATE);
 		this.equipletAgent = equipletAgent;
 		stateUpdateSubscription = new FieldUpdateSubscription("state", this);
 		stateUpdateSubscription.addOperation(MongoUpdateLogOperation.SET);
