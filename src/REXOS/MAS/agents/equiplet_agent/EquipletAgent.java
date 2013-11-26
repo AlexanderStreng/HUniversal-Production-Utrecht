@@ -285,7 +285,11 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			for(Row step : steps) {
 				capabilities.add((int) step.get("id"));
 			}
-			Logger.log(LogLevel.DEBUG, "Capabilities[0]: " + capabilities.get(0));
+			String allCapabilities = "";
+			for(int i = 0; i < capabilities.size(); i++){
+				allCapabilities += capabilities.get(i) + ", ";
+			}
+			Logger.log(LogLevel.DEBUG, "Capabilities: " + allCapabilities);
 
 			dbData = new DbData(equipletDbIp, equipletDbPort, equipletDbName);
 
@@ -347,8 +351,6 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			Logger.log(LogLevel.CRITICAL, "Database connection lost!", e);
 			//delete this agent and all opened blackboards / started agents
 			doDelete();
-		} catch(Exception e){
-			Logger.log(LogLevel.EMERGENCY, "Gotta catch 'em all...", e);
 		}
 
 		// starts the behaviour for receiving message when the Service Agent dies.
@@ -480,7 +482,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 							responseMessage.setPerformative(ACLMessage.CONFIRM);
 							productStep.setStatus(StepStatusCode.DONE);
 							responseMessage.setContentObject(productStep.toBasicDBObject());
-						//	productStepBBClient.removeDocuments(new BasicDBObject("_id", productStep.getId()));
+							productStepBBClient.removeDocuments(new BasicDBObject("_id", productStep.getId()));
 							break;
 						case DELETED:
 							setDesiredEquipletState(EquipletState.STANDBY);

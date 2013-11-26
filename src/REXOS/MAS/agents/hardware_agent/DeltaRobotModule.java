@@ -320,7 +320,7 @@ public class DeltaRobotModule extends Module {
 			payload.put("maxAcceleration", MAX_ACCELERATION);
 			lookUp = "FIND_ID";
 			
-			Logger.log(LogLevel.INFORMATION, "Moving to x: %d, y: %d.", position.getX(), position.getY());
+			Logger.log(LogLevel.INFORMATION, "Moving to x: %f, y: %f.", position.getX(), position.getY());
 			
 		} else {
 			// fill the payload parameters

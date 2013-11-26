@@ -168,7 +168,7 @@ public class NextProductStepTimer extends Timer {
 	 * 
 	 */
 	public void rescheduleTimer() {
-		Logger.log(LogLevel.INFORMATION, "Rescheduling!");
+		Logger.log(LogLevel.INFORMATION, "Rescheduling the next step's timer.");
 		try {
 			BasicDBObject query = new BasicDBObject("status", StepStatusCode.PLANNED.name());
 			BasicDBObject orderby = new BasicDBObject("scheduleData", new BasicDBObject("startTime", "1"));
