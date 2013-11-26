@@ -30,6 +30,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "mysql_connection.h"
 
@@ -44,6 +45,6 @@ namespace rexos_knowledge_database {
 		double getMointPointDistanceY();
 	private:
 		std::string name;
-		std::auto_ptr<sql::Connection> connection;
+		std::unique_ptr<sql::Connection> connection;
 	};
 }

@@ -69,7 +69,7 @@ deltaRobotNodeNamespace::DeltaRobotNode::DeltaRobotNode(int equipletID, int modu
 		jsonNode.push_back(*it);
 	}
 
-	ROS_INFO(jsonNode.write_formatted().c_str());
+	ROS_INFO("%s", jsonNode.write_formatted().c_str());
 	
 	// Create a deltarobot
 	deltaRobot = new rexos_delta_robot::DeltaRobot(jsonNode);
