@@ -161,7 +161,8 @@ void deltaRobotNodeNamespace::DeltaRobotNode::onSetInstruction(const rexos_state
 	}
 	
 	// L33T HACKING !!!!!!!!!!!!
-	moveVector.x *= 1.081081;
+	moveVector.x *= 1.0379;
+	moveVector.y *= 1.0205;
 
 	//std::cout << "trying to move to x: " << moveVector.x << " y: " << moveVector.y << " z: " <<  moveVector.z << " with acceleration: " << payloadPoint.maxAcceleration << std::endl;
 	if(moveToPoint(moveVector.x, moveVector.y, moveVector.z, payloadPoint.maxAcceleration)){

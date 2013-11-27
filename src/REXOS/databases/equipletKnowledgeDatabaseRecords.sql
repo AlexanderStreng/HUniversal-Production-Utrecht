@@ -68,8 +68,8 @@ insert into ModuleType(
 	}
 }", 1, "", 1, ""),
 ("HU", "work_plane_type_A", "{
-	\"midPointX\" : 171.75,
-	\"midPointY\" : -199.0,
+	\"midPointX\" : 171.5,
+	\"midPointY\" : -197.5,
 	\"midPointZ\" : 33.33,
 	\"topLeftValue\" : \"_WP_TL\",
 	\"topRightValue\" : \"_WP_TR\",
