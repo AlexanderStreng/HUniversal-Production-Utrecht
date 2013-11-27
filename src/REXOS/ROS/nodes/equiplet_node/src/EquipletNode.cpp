@@ -69,10 +69,9 @@ EquipletNode::EquipletNode(int id, std::string blackboardIp) :
 
 	equipletCommandBlackboardClient = new Blackboard::BlackboardCppClient(blackboardIp, STATE_BLACKBOARD, COLLECTION_EQUIPLET_COMMANDS);
 	equipletCommandSubscription = new Blackboard::BasicOperationSubscription(Blackboard::INSERT, *this);
-	equipletCommandSubscriptionSet = new Blackboard::BasicOperationSubscription(Blackboard::UPDATE, *this);
+    equipletCommandSubscriptionSet = new Blackboard::BasicOperationSubscription(Blackboard::UPDATE, *this);
 	equipletCommandBlackboardClient->subscribe(*equipletCommandSubscription);
 	sleep(1);
-	
 	equipletCommandBlackboardClient->subscribe(*equipletCommandSubscriptionSet);
 	subscriptions.push_back(equipletCommandSubscription);
 	subscriptions.push_back(equipletCommandSubscriptionSet);
@@ -273,8 +272,7 @@ std::map<std::string, std::string> EquipletNode::callLookupHandler(std::string l
 		environment_communication_msgs::Map map = msg.response.lookupMsg.payLoad;
 		return createMapFromMessage(map);
 	} else {
-		ROS_INFO("Could not find anything in the lookuphandler");
-		return payloadMap;
+		ROS_INFO("Error in calling lookupHandler/lookup service");
 	}
 }
 /**
