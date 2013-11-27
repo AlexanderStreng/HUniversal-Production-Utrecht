@@ -49,7 +49,7 @@ using namespace part_follow_node;
 
 
 PartFollowNode::PartFollowNode(std::string blackboardIp) :
-	maxAcceleration("50.0") {
+	maxAcceleration("5.0") {
 
 	ROS_INFO("Constructing");
 
@@ -86,9 +86,9 @@ void PartFollowNode::writeToBlackBoard(std::string acceleration){
 	std::map<std::string, std::string> look_up_parameters;
 	std::map<std::string, std::string> payload;
 
-	payload.insert(pair<string, string>("x", "1.0"));
-	payload.insert(pair<string, string>("y", "1.0"));
-	//payload.insert(pair<string, string>("z", 40));
+	payload.insert(pair<string, string>("x", "0.0"));
+	payload.insert(pair<string, string>("y", "0.0"));
+	payload.insert(pair<string, string>("z", "-335"));
 
 	ROS_INFO("E");
 	if(!acceleration.empty()) {
