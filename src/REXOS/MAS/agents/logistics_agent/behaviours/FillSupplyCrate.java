@@ -2,6 +2,8 @@ package agents.logistics_agent.behaviours;
 
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import libraries.utillities.log.LogLevel;
+import libraries.utillities.log.Logger;
 import agents.logistics_agent.LogisticsAgent;
 import agents.shared_behaviours.ReceiveBehaviour;
 
@@ -24,6 +26,7 @@ public class FillSupplyCrate extends ReceiveBehaviour {
 	
 	@Override
 	public void handle(ACLMessage message) {
+		Logger.log(LogLevel.INFORMATION, "Refilling the supply Crate");
 		logisticsAgent.fillSupplyCrate();
 	}
 

@@ -285,7 +285,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			for(Row step : steps) {
 				capabilities.add((int) step.get("id"));
 			}
-			String allCapabilities = null;
+			String allCapabilities = "";
 			for(int i = 0; i < capabilities.size(); i++){
 				allCapabilities += capabilities.get(i) + ", ";
 			}
@@ -482,7 +482,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 							responseMessage.setPerformative(ACLMessage.CONFIRM);
 							productStep.setStatus(StepStatusCode.DONE);
 							responseMessage.setContentObject(productStep.toBasicDBObject());
-						//	productStepBBClient.removeDocuments(new BasicDBObject("_id", productStep.getId()));
+							productStepBBClient.removeDocuments(new BasicDBObject("_id", productStep.getId()));
 							break;
 						case DELETED:
 							setDesiredEquipletState(EquipletState.STANDBY);
