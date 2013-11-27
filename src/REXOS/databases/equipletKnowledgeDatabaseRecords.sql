@@ -19,7 +19,7 @@ insert into ModuleType(
 		\"effectorRadius\" : 46.19,
 		\"ankleLength\" : 250.0,
 		\"hipAnleMaxAngleDegrees\" : 22.0,
-		\"motorFromZeroToTopAngleDegrees\" : 19.0,
+		\"motorFromZeroToTopAngleDegrees\" : 20.5,
 		\"boundaryBoxMinX\" : -200.0,
 		\"boundaryBoxMaxX\" : 200.0,
 		\"boundaryBoxMinY\" : -200.0,
@@ -38,14 +38,43 @@ insert into ModuleType(
 		\"maxSpeedDegrees\" : 18000
 	}
 }", 1, "", 1, ""),
-("HU", "work_plane_type_A", "{
-	\"midPointX\" : 176.0,
+("HU", "delta_robot_type_B", "{
+	\"midPointX\" : 75.0,
 	\"midPointY\" : -200.0,
+	\"midPointZ\" : -35.3,
+	\"deltaRobotMeasures\" : {
+		\"baseRadius\" : 101.3,
+		\"hipLength\" : 100.0,
+		\"effectorRadius\" : 46.19,
+		\"ankleLength\" : 300.0,
+		\"hipAnleMaxAngleDegrees\" : 22.0,
+		\"motorFromZeroToTopAngleDegrees\" : 20.0,
+		\"boundaryBoxMinX\" : -200.0,
+		\"boundaryBoxMaxX\" : 200.0,
+		\"boundaryBoxMinY\" : -200.0,
+		\"boundaryBoxMaxY\" : 200.0,
+		\"boundaryBoxMinZ\" : -380.0,
+		\"boundaryBoxMaxZ\" : -180.0
+	}, 
+	\"calibrationBigStepFactor\" : 20,
+	\"stepperMotorProperties\" : {
+		\"motorMinAngleDegrees\" : -18.0,
+		\"motorMaxAngleDegrees\" : 80.0,
+		\"microStepAngleDegrees\" : 0.036,
+		\"minAccelerationDegrees\" : 36,
+		\"maxAccelerationDegrees\" : 36000,
+		\"minSpeedDegrees\" : 0.036,
+		\"maxSpeedDegrees\" : 18000
+	}
+}", 1, "", 1, ""),
+("HU", "work_plane_type_A", "{
+	\"midPointX\" : 171.75,
+	\"midPointY\" : -199.0,
 	\"midPointZ\" : 33.33,
 	\"topLeftValue\" : \"_WP_TL\",
 	\"topRightValue\" : \"_WP_TR\",
 	\"bottomRightValue\" : \"_WP_BR\",
-	\"workPlaneWidth\" : 80.0,
+	\"workPlaneWidth\" : 82.5,
 	\"workPlaneHeight\" : 80.0
 }", 1, "", 1, ""), 
 ("HU", "gripper_type_A", "{
@@ -71,6 +100,10 @@ insert into Module(
 ("The_Imaging_Source_Europe_GmbH", "DFK_22AUC03", "26210035", 3, 2, null, null, null, ""),
 ("The_Imaging_Source_Europe_GmbH", "Cheap_ass_lens", "1", 6, 4, "The_Imaging_Source_Europe_GmbH", "DFK_22AUC03", "26210035", ""),
 ("HU", "delta_robot_type_A", "1", 3, 2, null, null, null, "{
+	\"modbusIp\" : \"192.168.0.22\",
+	\"modbusPort\" : 502
+}"),
+("HU", "delta_robot_type_B", "1", 3, 1, null, null, null, "{
 	\"modbusIp\" : \"192.168.0.22\",
 	\"modbusPort\" : 502
 }"),
