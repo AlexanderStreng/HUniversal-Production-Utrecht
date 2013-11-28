@@ -386,6 +386,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 			}
 
 			// Clears his own blackboard and removes his subscription on that blackboard.
+			
 			productStepBBClient.removeDocuments(new BasicDBObject());
 			productStepBBClient.unsubscribe(statusSubscription);
 		} catch(InvalidDBNamespaceException | GeneralMongoException | IOException e) {
@@ -483,6 +484,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 							productStep.setStatus(StepStatusCode.DONE);
 							responseMessage.setContentObject(productStep.toBasicDBObject());
 							productStepBBClient.removeDocuments(new BasicDBObject("_id", productStep.getId()));
+							letServiceAgentRemoveServiceSteps(productStep.getId());
 							break;
 						case DELETED:
 							setDesiredEquipletState(EquipletState.STANDBY);
@@ -492,6 +494,7 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 							responseMessage.setPerformative(ACLMessage.CONFIRM);
 							responseMessage.setContentObject(productStep.toBasicDBObject());
 							productStepBBClient.removeDocuments(new BasicDBObject("_id", productStep.getId()));
+							letServiceAgentRemoveServiceSteps(productStep.getId());
 							break;
 						default:
 							break;
@@ -524,12 +527,22 @@ public class EquipletAgent extends Agent implements BlackboardSubscriber {
 				default:
 					break;
 			}
-		} catch(GeneralMongoException | InvalidDBNamespaceException | IOException e) {
+		} catch(GeneralMongoException | InvalidDBNamespaceException e) {
 			// TODO handle error
 			Logger.log(LogLevel.CRITICAL, "Database connection lost.", e);
+		} catch (IOException e){
+			Logger.log(LogLevel.CRITICAL, "Error on setting message contents", e);
 		}
 	}
 
+	private void letServiceAgentRemoveServiceSteps(ObjectId productStepId) throws IOException{
+		ACLMessage inform = new ACLMessage(ACLMessage.INFORM);
+		inform.setOntology("RemoveServiceStep");
+		inform.setContentObject(productStepId);
+		inform.addReceiver(serviceAgent);
+		send(inform);
+	}
+	
 	public EquipletStateEntry getEquipletStateEntry() throws InvalidDBNamespaceException, GeneralMongoException {
 		List<DBObject> equipletStates = stateBBClient.findDocuments(new BasicDBObject("id", equipletId));
 		
