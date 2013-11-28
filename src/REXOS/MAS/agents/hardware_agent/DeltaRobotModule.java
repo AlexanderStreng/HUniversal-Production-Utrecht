@@ -64,7 +64,7 @@ public class DeltaRobotModule extends Module {
 	 *      A static value that contains the height of the safe movement plane.
 	 */
 	//private static final double SAFE_MOVEMENT_PLANE = 25;
-	private static final double SAFE_MOVEMENT_PLANE = -250;
+	private static final double SAFE_MOVEMENT_PLANE = -270;
 	
 	/**
 	 * @var double MAX_ACCELERATION
@@ -379,7 +379,7 @@ public class DeltaRobotModule extends Module {
 			lookUp = "FIND_ID";
 			
 
-			Logger.log(LogLevel.INFORMATION, "Moving to z: %d", position.getZ());
+			Logger.log(LogLevel.INFORMATION, "Moving to z: %f", position.getZ());
 		} else {
 			// fill in the payload parameters.
 			payload.put("z", "Z-PLACEHOLDER");
