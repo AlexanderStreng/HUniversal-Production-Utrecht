@@ -136,7 +136,13 @@ public class GripperModule extends Module {
 		}
 		
 		//get steps from the movementModule to move to the safe movement plane.
-		steps.addAll(Arrays.asList(movementModule.getEquipletSteps(1, moveParameters)));
+		// L33T HACKING !!!!!!!!!!!!!
+		BasicDBObject moveParameters2 = new BasicDBObject();
+		moveParameters2.put("extraSize", GRIPPER_SIZE + crateHeight);
+		Position p = new Position();
+		p.setZ(50.0);
+		moveParameters2.put("position", p.toBasicDBObject());
+		steps.addAll(Arrays.asList(movementModule.getEquipletSteps(3, moveParameters2)));
 
 		//convert the ArrayList to an array and return it.
 		equipletSteps = new EquipletStep[steps.size()];
@@ -164,13 +170,27 @@ public class GripperModule extends Module {
         double crateSlotDimension = 11;
         double crateSlotMidPoint = 6;
         double extraSize = GRIPPER_SIZE + crateHeight;
+        
+        double cellRadius = 5.02;
+        double cellSpacing = 1.04 / 2;
+        
+        double colCount = 4;
+        double rowCount = 4;
+        
+        int col = (int) parameters.getDouble("column");
+        int row = (int) parameters.getDouble("row");
+        double relativeX = -(colCount / 2) * (2 * cellRadius + 2 * cellSpacing);
+        double relativeY = -(rowCount / 2) * (2 * cellRadius + 2 * cellSpacing);
+        
+        relativeX += col * (2 * cellRadius + 2 * cellSpacing) + (cellSpacing + cellRadius); 
+        relativeY += row * (2 * cellRadius + 2 * cellSpacing) + (cellSpacing + cellRadius); 
 		
 		Part part = new Part((BasicDBObject)parameters.get("crate"));
 		
 		double x = (parameters.getDouble("column") * crateSlotDimension + crateSlotMidPoint) - (crateDimension / 2);
 		double y = ((parameters.getDouble("row") * crateSlotDimension + crateSlotMidPoint) - (crateDimension / 2)) * -1;
 		
-		Position position = new Position(x, y, 5.0, part);
+		Position position = new Position(relativeX, relativeY, 5.0, part);
 		
 		//get the newest code of the movementModule.
 		int movementModuleId = findMovementModule(getConfiguration());
