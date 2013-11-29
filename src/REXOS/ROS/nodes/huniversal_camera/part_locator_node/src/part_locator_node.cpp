@@ -66,8 +66,8 @@ PartLocatorNode::PartLocatorNode(int equipletId, std::string cameraManufacturer,
 	topLeftValue = std::string();
 	topRightValue = std::string();
 	bottomRightValue = std::string();
-	double workPlaneWidth = std::numeric_limits<double>::quiet_NaN();
-	double workPlaneHeight = std::numeric_limits<double>::quiet_NaN();
+	workPlaneWidth = std::numeric_limits<double>::quiet_NaN();
+	workPlaneHeight = std::numeric_limits<double>::quiet_NaN();
 	
 	for(JSONNode::const_iterator it = jsonNode.begin(); it != jsonNode.end(); it++) {
 		if(it->name() == "topLeftValue"){
@@ -144,7 +144,7 @@ void PartLocatorNode::qrCodeCallback(const vision_node::QrCodes & message) {
 			ROS_DEBUG_STREAM("-equipletCoor \t" << equipletCoor);
 		}*/
 		
-		storeInEnviromentCache(message.qrCodes[i].value, equipletCoor, qrCode.angle);
+		storeInEnviromentCache(message.qrCodes[i].value, equipletCoor, smoothCenterCoor.angle);
 		
 		delete points;
 	}
@@ -369,11 +369,11 @@ Matrix3 PartLocatorNode::calculateScaleMatrix() {
 	ROS_DEBUG_STREAM("lineTr2Br " << lineTr2Br);
 	
 
-	double workplateWidth = 80;
-	double workplateHeight = 80;
 	Matrix3 scaleMatrix;
-	scaleMatrix[0] = -(	(workplateWidth / 1) / (lineTl2Tr.length()));
-	scaleMatrix[4] = -(	(workplateHeight / 1) / (lineTr2Br.length()));
+	scaleMatrix[0] = -(	(workPlaneWidth / 1) / (lineTl2Tr.length()));
+	scaleMatrix[4] = -(	(workPlaneHeight / 1) / (lineTr2Br.length()));
+	ROS_DEBUG_STREAM("workPlaneWidth " << workPlaneWidth);
+	ROS_DEBUG_STREAM("workPlaneHeight " << workPlaneHeight);
 	ROS_DEBUG_STREAM("lineTl2Tr.length() " << lineTl2Tr.length());
 	ROS_DEBUG_STREAM("lineTr2Br.length() " << lineTr2Br.length());
 	ROS_DEBUG_STREAM("scaleMatrix " << scaleMatrix);
