@@ -170,13 +170,18 @@ PartLocatorNode::QrCode PartLocatorNode::calculateSmoothPos(boost::circular_buff
 		yArray.push_back(points[i].location.y);
 		angleArray.push_back(points[i].angle);
 	}
-	std::sort(xArray.begin(), xArray.end());
+	/*std::sort(xArray.begin(), xArray.end());
 	std::sort(yArray.begin(), yArray.end());
-	std::sort(angleArray.begin(), angleArray.end());
+	std::sort(angleArray.begin(), angleArray.end());*/
+	
+	double sumX = std::accumulate(xArray.begin(), xArray.end(), 0.0);
+	double sumY = std::accumulate(yArray.begin(), yArray.end(), 0.0);
+	double sumAngle = std::accumulate(angleArray.begin(), angleArray.end(), 0.0);
 	
 	QrCode output;
-	output.location = Vector2(xArray[buffer.size() / 2], yArray[buffer.size() / 2]);
-	output.angle = angleArray[buffer.size() / 2];
+//	output.location = Vector2(xArray[buffer.size() / 2], yArray[buffer.size() / 2]);
+	output.location = Vector2(sumX / buffer.size(), sumY / buffer.size());
+	output.angle = sumAngle / buffer.size();
 	return output;
 }
 
