@@ -100,8 +100,8 @@ void GripperNode::onSetInstruction(const rexos_statemachine::SetInstructionGoalC
 				return;
 			} else if(strcmp(i->as_string().c_str(), "deactivate") == 0) {
 				std::cout << "Deactivating gripper" << std::endl;
-				gripper->release();
 				ros::Duration(1.0).sleep(); // sleep for 0.2 second
+				gripper->release();
 				setInstructionActionServer.setSucceeded(result_);
 				return;
 			}
