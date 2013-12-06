@@ -69,7 +69,7 @@ public class GripperModule extends Module {
 	 * @var int GRIPPER_SIZE
 	 * A static value that contains the size of the gripper.
 	 */
-	private static final double GRIPPER_SIZE = 18.24;
+	private static final double GRIPPER_SIZE = 17.74;
 	
 	/**
 	 * @var int TIMESLOTS_NEEDED_PER_STEP
