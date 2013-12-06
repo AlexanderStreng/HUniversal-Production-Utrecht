@@ -136,7 +136,7 @@ void deltaRobotNodeNamespace::DeltaRobotNode::onSetInstruction(const rexos_state
     if(lookupIsSet) {
 		Vector3 lookupVector(lookupResultPoint.x, lookupResultPoint.y, lookupResultPoint.z);
 
-		double theta = angle * 3.141592653589793 / 180.0;
+		double theta = angle; // * 3.141592653589793 / 180.0;
 		double cs = cos(theta);
 		double sn = sin(theta);
 		rotatedX = payloadPoint.x * cs - payloadPoint.y * sn;
@@ -161,8 +161,8 @@ void deltaRobotNodeNamespace::DeltaRobotNode::onSetInstruction(const rexos_state
 	}
 	
 	// L33T HACKING !!!!!!!!!!!!
-	moveVector.x *= 1.0379;
-	moveVector.y *= 1.0205;
+	//moveVector.x *= 1.0205;
+	//moveVector.y *= 1.0305;
 
 	//std::cout << "trying to move to x: " << moveVector.x << " y: " << moveVector.y << " z: " <<  moveVector.z << " with acceleration: " << payloadPoint.maxAcceleration << std::endl;
 	if(moveToPoint(moveVector.x, moveVector.y, moveVector.z, payloadPoint.maxAcceleration)){

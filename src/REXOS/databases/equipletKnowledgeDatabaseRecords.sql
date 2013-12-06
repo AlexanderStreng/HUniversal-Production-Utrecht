@@ -68,14 +68,14 @@ insert into ModuleType(
 	}
 }", 1, "", 1, ""),
 ("HU", "work_plane_type_A", "{
-	\"midPointX\" : 171.5,
-	\"midPointY\" : -197.5,
+	\"midPointX\" : 169.25,
+	\"midPointY\" : -198.75,
 	\"midPointZ\" : 33.33,
 	\"topLeftValue\" : \"_WP_TL\",
 	\"topRightValue\" : \"_WP_TR\",
 	\"bottomRightValue\" : \"_WP_BR\",
-	\"workPlaneWidth\" : 82.5,
-	\"workPlaneHeight\" : 80.0
+	\"workPlaneWidth\" : 88.0,
+	\"workPlaneHeight\" : 78.0
 }", 1, "", 1, ""), 
 ("HU", "gripper_type_A", "{
 	\"modbusAddress\" : 8001,

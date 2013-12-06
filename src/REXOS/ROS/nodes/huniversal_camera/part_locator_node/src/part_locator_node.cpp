@@ -40,7 +40,9 @@
 
 using namespace std;
 
-const Vector2 PartLocatorNode::EXPECTED_DIRECTION = Vector2(-1, 0);
+//const Vector2 PartLocatorNode::EXPECTED_DIRECTION = Vector2(-0.9992, -0.03996);
+//const Vector2 PartLocatorNode::EXPECTED_DIRECTION = Vector2(-1, 0);
+const Vector2 PartLocatorNode::EXPECTED_DIRECTION = Vector2(-0.999550, -0.0300);
 const Vector2 PartLocatorNode::EXPECTED_ITEM_DIRECTION = Vector2(-1, 0);
 const int PartLocatorNode::minCornerSamples = 101;
 const int PartLocatorNode::minItemSamples = 11;
