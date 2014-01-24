@@ -152,7 +152,7 @@ public class DynamicProductSpawner implements Updatable {
 					capabilitiesToPerform.remove(index);
 				}
 			}
-			products.add(new Product(productName, simulation, grid, productCapabilities.toArray(new Capability[productCapabilities.size()]), simulation.getCurrentSimulationTime() + 86 * 1000));
+			products.add(new Product(productName, simulation, grid, productCapabilities.toArray(new Capability[productCapabilities.size()]), simulation.getCurrentSimulationTime() + 60 * 60 * 1000));
 		}
 		return products.toArray(new Product[products.size()]);
 	}

@@ -15,7 +15,7 @@ import simulation.data.TimeSlot;
 import agents.data_classes.Matrix;
 
 public class Product implements Updatable{
-	
+
 	public enum ProductState {
 		inProgress,
 		finished,
@@ -24,15 +24,17 @@ public class Product implements Updatable{
 	public enum FailureReason {
 		noSuitableEquiplet,
 		deadline,
-		equipletLoadToHigh
+		equipletLoadTooHigh
 	}
-	
+
 
 	private static boolean useEquipletsOutsideReservation = true;
-	private static double loadTreshold = 0.850000;
+	private static double loadTreshold = 1.000;
 	private static long rescheduleDelay = 60000;
 	private static int rescheduleAttempts = 3;
-	
+
+	private static double distanceFactor = 100000.0;
+
 	private String productType;
 	private ProductStep[] productSteps;
 	private Equiplet[] equiplets;
@@ -41,13 +43,13 @@ public class Product implements Updatable{
 	private Simulation simulation;
 	private Grid grid;
 	private Batch batch;
-	
+
 	private boolean needNewSchedule = false;
 	private int scheduleFailures = 0;
 	private FailureReason lastFailureReason = null;
 	private ProductState state;
 	private long rescheduleTime;
-	
+
 	public Product(String productType, Simulation simulation, Grid grid, Capability[] capabilities, long deadline){
 		this(productType, simulation, grid, capabilities, deadline, null);
 	}
@@ -61,25 +63,25 @@ public class Product implements Updatable{
 
 		if(batch != null) {
 			if(useEquipletsOutsideReservation &&
-						grid.containsEquipletInError(grid.getEquipletsForReservation(batch.getBatchGroup()))) {
+					grid.containsEquipletInError(grid.getEquipletsForReservation(batch.getBatchGroup()))) {
 				this.equiplets = grid.getEquipletsWithoutReservation();
-			
+
 				//TOMMAS PLS DUN RED HER
 				ArrayList<Equiplet> equipletList = new ArrayList<>();
 				equipletList.addAll(Arrays.asList(grid.getEquipletsWithoutReservation()));
 				equipletList.addAll(Arrays.asList(grid.getEquipletsForReservation(batch.getBatchGroup())));
 				this.equiplets = (Equiplet[]) equipletList.toArray(new Equiplet[equipletList.size()]);
 				//U KEN RED HER
-				
+
 			} else {
 				this.equiplets = grid.getEquipletsForReservation(batch.getBatchGroup());
 			}
 		} else {
 			this.equiplets = grid.getEquipletsWithoutReservation();
 		}
-		
+
 		finalSchedules = new LinkedHashMap<ProductStep, Schedule>();
-		
+
 		this.state = ProductState.inProgress;
 		long currentTimeSlot = TimeSlot.getCurrentTimeSlot(simulation, grid.getGridProperties());
 		//We need to pass the current timeslot, to prevent synchronisation issues.
@@ -90,10 +92,10 @@ public class Product implements Updatable{
 			needNewSchedule = true;
 			scheduleFailures++;
 			rescheduleTime = simulation.getCurrentSimulationTime() + rescheduleDelay;
-			lastFailureReason = FailureReason.equipletLoadToHigh;
+			lastFailureReason = FailureReason.equipletLoadTooHigh;
 		}
 	}
-	
+
 	private ProductStep[] generateProductSteps(Capability[] capabilities){
 		ProductStep[] productSteps = new ProductStep[capabilities.length];
 		for (int i = 0; i < capabilities.length; i++) {
@@ -112,22 +114,22 @@ public class Product implements Updatable{
 	private Matrix generateScheduleMatrix(Equiplet[] equiplets, ProductStep[] productSteps, long currentTimeSlot) throws Exception {		
 		//construct a new matrices to perform a neat-o selection
 		Matrix scheduleMatrix = new Matrix(equiplets.length, productSteps.length);
-		
+
 		int sequenceLength, firstInSequence;
-		
+
 		//Iterate through them steps to fill the matrix
 		for (int row = 0; row < equiplets.length; row++) { // row ( equiplets )
 			//System.out.println("row " + row);
 			sequenceLength = 0; firstInSequence = -1; // always set sequenceLength to 0 and firstInsequence to -1 when doing a new row.
-			
+
 			long scheduleTimeSlot = currentTimeSlot; // scheduletimeslot has to be the same for each equiplet.
-			
+
 			for (int column = 0; column < productSteps.length; column++) { // column ( product steps
 				//System.out.println("col " + column);
-				
+
 				double canPerformStepValue = equiplets[row].canPerformStep(productSteps[column].getCapability()) ? 1.0 : 0.0;
 				//System.out.println("canPerformStepValue " + canPerformStepValue);
-				
+
 				if(canPerformStepValue == 1.0) {   //increase sequence counter.
 					scheduleMatrix.set(row, column, canPerformStepValue);
 					if(firstInSequence < 0){	  //set the first item in the sequence.
@@ -143,7 +145,7 @@ public class Product implements Updatable{
 					firstInSequence = -1;
 				}
 				//TimeSlot loadSlot = equiplets[row].getFirstFreeTimeSlot(scheduleTimeSlot, productSteps[column].getDuration());
-				
+
 				//value might have changed since we added sequence multiplier 
 				//double loadValue = equiplets[row].getLoad(new TimeSlot(scheduleTimeSlot, 0));
 				long deadlineInTimeSlots = TimeSlot.getTimeSlotFromMillis(this.grid.getGridProperties(), deadline);
@@ -153,117 +155,134 @@ public class Product implements Updatable{
 				if(loadValue >= loadTreshold){
 					throw new Exception("Loadthreshold has been reached. Stopping scheduling.");
 				}
-				
+
 				//Multiply with load value ( e.g. the load of the equiplet )
 				scheduleMatrix.set(row, column, (scheduleMatrix.get(row, column) * (1 - loadValue)));
 
 				//add the time to the scheduleTimeSlot
 				scheduleTimeSlot += productSteps[column].getCapability().getDuration();
-				
+
 				//we still need a transportstep?
 				scheduleTimeSlot += grid.GetMeanDistance(); 
 			}
 		}
 		System.out.println("Product {" + this + "} schedule: ");
-		scheduleMatrix.show();
+		//scheduleMatrix.show();
 		return scheduleMatrix;
 	}
 
 	private void schedule(long currentTimeSlot, Matrix scheduleMatrix, ProductStep[] productStepsToSchedule) {
 		// Read the matrix. Write function to iterate each seperate row ( productsteps ) and pick each equiplet 
-		Equiplet previousEquiplet, currentEquiplet = null;
-		for (int column = 0; column < scheduleMatrix.getNumberOfColumns(); column++) { //Productsteps 
-			
-			int highestEquipletScoreIndex = -1;
-			ProductStep productStep = productStepsToSchedule[column];
-			
-			for (int row = 0; row < scheduleMatrix.getNumberOfRows(); row++) { //AID'S
-				if(highestEquipletScoreIndex == -1) {
-					if(scheduleMatrix.get(row, column) > 0) {
-						highestEquipletScoreIndex = row;
+		try{
+
+			Equiplet previousEquiplet, currentEquiplet = null;
+
+			for (int column = 0; column < scheduleMatrix.getNumberOfColumns(); column++) { //Productsteps 
+
+
+				int highestEquipletScoreIndex = -1;
+				ProductStep productStep = productStepsToSchedule[column];
+
+				if(currentEquiplet == null){ // first iteration
+					currentEquiplet = equiplets[0];
+				}			
+
+				for (int row = 0; row < scheduleMatrix.getNumberOfRows(); row++) { //AID'S
+
+
+					//double temp = (scheduleMatrix.get(row, column)) - (grid.getDistanceBetweenEquiplets(equiplets[row], currentEquiplet) / distanceFactor)); 
+					//scheduleMatrix.set(row, column, (temp > 0 ? temp : 0));
+
+					if(highestEquipletScoreIndex == -1) {
+						if(scheduleMatrix.get(row, column) > 0) {
+							highestEquipletScoreIndex = row;
+						}
+					} else {
+						highestEquipletScoreIndex = (scheduleMatrix.get(row, column) > scheduleMatrix.get(highestEquipletScoreIndex, column)) ? row : highestEquipletScoreIndex;
 					}
-				} else {
-					highestEquipletScoreIndex = (scheduleMatrix.get(row, column) > scheduleMatrix.get(highestEquipletScoreIndex, column)) ? row : highestEquipletScoreIndex;
 				}
-			}
-			
-			if(highestEquipletScoreIndex < 0){
-				//System.out.println("No suitable equiplet found for this step! Scheduling has gone wrong.. Reschedule?");
-				needNewSchedule = true;
-				scheduleFailures++;
-				rescheduleTime = simulation.getCurrentSimulationTime() + rescheduleDelay;
-				lastFailureReason = FailureReason.noSuitableEquiplet;
-				return;
-			}
-			
-			if(currentEquiplet == null){ // first iteration
-				currentEquiplet = equiplets[0];
-			}
-			
-			//Can we assume that all productSteps are ordered? What about parallel steps? Lets get the equiplet.
-			previousEquiplet = currentEquiplet;
-			currentEquiplet = equiplets[highestEquipletScoreIndex]; //this might not work.
-			
-			//transportdistance
-			currentTimeSlot += grid.getDistanceBetweenEquiplets(previousEquiplet, currentEquiplet);
-			
-			//Get first free timeslot
-			/*System.out.println("productStep " + productStep + " EQ " + currentEquiplet);
+
+				if(highestEquipletScoreIndex < 0){
+					//System.out.println("No suitable equiplet found for this step! Scheduling has gone wrong.. Reschedule?");
+					needNewSchedule = true;
+					scheduleFailures++;
+					rescheduleTime = simulation.getCurrentSimulationTime() + rescheduleDelay;
+					lastFailureReason = FailureReason.noSuitableEquiplet;
+					return;
+				}
+
+				//Can we assume that all productSteps are ordered? What about parallel steps? Lets get the equiplet.
+				previousEquiplet = currentEquiplet;
+				currentEquiplet = equiplets[highestEquipletScoreIndex]; //this might not work.
+
+				//transportdistance
+				currentTimeSlot += grid.getDistanceBetweenEquiplets(previousEquiplet, currentEquiplet);
+
+				//Get first free timeslot
+				/*System.out.println("productStep " + productStep + " EQ " + currentEquiplet);
 			System.out.println("? currentTimeslot = " + currentTimeSlot);*/
-			TimeSlot timeSlot = currentEquiplet.getFirstFreeTimeSlot(currentTimeSlot, productStep.getCapability().getDuration());
-			/*System.out.println("^timeSlot.getStartTimeSlot() = " + timeSlot.getStartTimeSlot() + 
+				TimeSlot timeSlot = currentEquiplet.getFirstFreeTimeSlot(currentTimeSlot, productStep.getCapability().getDuration());
+				/*System.out.println("^timeSlot.getStartTimeSlot() = " + timeSlot.getStartTimeSlot() + 
 					" timeSlot.getDuration() = " + timeSlot.getDuration());*/
-			if(timeSlot.getStartTimeSlot() < currentTimeSlot) {
-				timeSlot = new TimeSlot(currentTimeSlot, timeSlot.getDuration());
-			}
-			if(timeSlot.getDuration() > productStep.getCapability().getDuration() || timeSlot.getDuration() == -1) {
-				timeSlot = new TimeSlot(timeSlot.getStartTimeSlot(), productStep.getCapability().getDuration());
-			}
-			
-			//System.out.println("# currentTimeslot = " + currentTimeSlot);
-			currentTimeSlot = timeSlot.getStartTimeSlot() + timeSlot.getDuration();
-			/*System.out.println("& timeSlot = " + timeSlot.getStartTimeSlot());
+				if(timeSlot.getStartTimeSlot() < currentTimeSlot) {
+					timeSlot = new TimeSlot(currentTimeSlot, timeSlot.getDuration());
+				}
+				if(timeSlot.getDuration() > productStep.getCapability().getDuration() || timeSlot.getDuration() == -1) {
+					timeSlot = new TimeSlot(timeSlot.getStartTimeSlot(), productStep.getCapability().getDuration());
+				}
+
+				//System.out.println("# currentTimeslot = " + currentTimeSlot);
+				currentTimeSlot = timeSlot.getStartTimeSlot() + timeSlot.getDuration();
+				/*System.out.println("& timeSlot = " + timeSlot.getStartTimeSlot());
 			System.out.println("* currentTimeslot = " + currentTimeSlot);
 			System.out.println("timeSlot.getStartTimeSlot() = " + timeSlot.getStartTimeSlot() + 
 					" timeSlot.getDuration() = " + timeSlot.getDuration());
-			*/
-			
-			//Check the equiplets schedule. Lets check if the schedule fits. 
-			finalSchedules.put(productStep, new Schedule(timeSlot, currentEquiplet));
-			if(currentTimeSlot > TimeSlot.getTimeSlotFromMillis(grid.getGridProperties(), deadline)) {
-				//System.out.println("Product" + this + "is over deadline");
-				needNewSchedule = true;
-				scheduleFailures++;
-				rescheduleTime = simulation.getCurrentSimulationTime() + rescheduleDelay;
-				lastFailureReason = FailureReason.deadline;
-				return;
+				 */
+
+				//Check the equiplets schedule. Lets check if the schedule fits. 
+				finalSchedules.put(productStep, new Schedule(timeSlot, currentEquiplet));
+				if(currentTimeSlot > TimeSlot.getTimeSlotFromMillis(grid.getGridProperties(), deadline)) {
+					//System.out.println("Product" + this + "is over deadline");
+					needNewSchedule = true;
+					scheduleFailures++;
+					rescheduleTime = simulation.getCurrentSimulationTime() + rescheduleDelay;
+					lastFailureReason = FailureReason.deadline;
+					return;
+				}
+
+				//add the time to the currenttimeslot
+				//currentTimeSlot += productStep.getCapability().getDuration();
 			}
-			
-			//add the time to the currenttimeslot
-			//currentTimeSlot += productStep.getCapability().getDuration();
-		}
-		// Message all the equiplets with their correspondig equiplet steps
-		for (ProductStep step : finalSchedules.keySet()) {
-			Schedule schedule = finalSchedules.get(step);
-			if(step.getState() == StepState.Evaluating) {
-				/*System.out.println("productStep " + step + " equiplet " + schedule.getEquiplet());
+			// Message all the equiplets with their correspondig equiplet steps
+			for (ProductStep step : finalSchedules.keySet()) {
+				Schedule schedule = finalSchedules.get(step);
+				if(step.getState() == StepState.Evaluating) {
+					/*System.out.println("productStep " + step + " equiplet " + schedule.getEquiplet());
 				System.out.println("! currentTimeslot = " + schedule.getTimeSlot().getStartTimeSlot());*/
-				if(schedule.getEquiplet().schedule(step, schedule.getTimeSlot())){
-					step.setState(StepState.Scheduled);
-				} else {
-				//	needNewSchedule = true;
+					if(schedule.getEquiplet().schedule(step, schedule.getTimeSlot())){
+						step.setState(StepState.Scheduled);
+					} else {
+						//	needNewSchedule = true;
+					}
 				}
 			}
+		} catch(Exception e){
+			e.getStackTrace();
+			e.printStackTrace();
+
+			System.out.println("Really ...");
 		}
+		//scheduleMatrix.show();
+
 	}
-	
+
 	private void setSequenceValues(int row, int firstInSequence, int sequenceLength, Matrix matrix){
 		int value = (int)((sequenceLength -1) * 0.5);
 		for(int i = firstInSequence; i < firstInSequence + sequenceLength; i++){
 			matrix.set(row, i, (matrix.get(row, i) + value));
 		}
 	}
-	
+
 	private void reschedule(boolean fromStart){
 		/*System.out.println("product " + this + " is rescheduling, fromstart:" + fromStart);
 		System.out.println(finalSchedules.size());
@@ -271,10 +290,10 @@ public class Product implements Updatable{
 		for (ProductStep ps : productSteps) {
 			System.out.println("\t" + ps);
 		}*/
-		
+
 		ArrayList<ProductStep> newProductSteps = new ArrayList<ProductStep>();
 		//only cancel future steps. Lets assume that steps that are already completed are still usable.
-		
+
 		//ProductStep[] steps = finalSchedules.keySet().toArray(new ProductStep[finalSchedules.size()]);
 		for(int i = 0; i < productSteps.length; i++) {
 			ProductStep step = productSteps[i];
@@ -293,13 +312,13 @@ public class Product implements Updatable{
 			}
 		}
 		long currentTimeSlot = TimeSlot.getCurrentTimeSlot(simulation, grid.getGridProperties());
-		
-		
+
+
 		/*for (ProductStep ps : productSteps) {
 			System.out.println("\t" + ps);
 		}*/
-		
-		
+
+
 		//so now we have a newProductSteps and finalSchedules. Lets try to schedule again.
 		try {
 			schedule(currentTimeSlot, 
@@ -312,7 +331,7 @@ public class Product implements Updatable{
 			rescheduleTime = simulation.getCurrentSimulationTime() + rescheduleDelay;
 		}
 	}
-	
+
 	public void handleEquipletError(StepState stepState){
 		if(stepState == StepState.ScheduleError){
 			reschedule(false);
@@ -330,7 +349,7 @@ public class Product implements Updatable{
 			this.state = ProductState.failed;
 			simulation.removeUpdateable(this);
 		}
-		
+
 		// EQ error occured?
 		for (ProductStep ps : productSteps) {
 			if(ps.getState() == StepState.ProductError || ps.getState() == StepState.ScheduleError) {
@@ -341,18 +360,18 @@ public class Product implements Updatable{
 				break;
 			}
 		}
-		
+
 		// are we finished?
 		if(getProgress() == 1.0) {
 			this.state = ProductState.finished;
 		}
-		
+
 		if(needNewSchedule == true && time >= rescheduleTime) {
 			needNewSchedule = false;
 			reschedule(false);
 		}
 	}
-	
+
 	public long getDeadline() {
 		return deadline;
 	}
@@ -366,11 +385,11 @@ public class Product implements Updatable{
 			return "id:" + this.hashCode() + " batch:-";
 		}
 	}
-	
+
 	public String getType() {
 		return productType;
 	}
-	
+
 	public double getProgress() {
 		int finishedSteps = 0;
 		for (ProductStep step : productSteps) {
@@ -378,7 +397,7 @@ public class Product implements Updatable{
 		}
 		return finishedSteps / productSteps.length;
 	}
-	
+
 	public ProductState getState() {
 		return state;
 	}
