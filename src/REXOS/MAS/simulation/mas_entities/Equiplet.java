@@ -134,21 +134,28 @@ public class Equiplet implements Updatable{
 				if (productStepSchedule.getStartTimeSlot() + productStepSchedule.getDuration() - 1 > timeSlot.getStartTimeSlot() && 
 						productStepSchedule.getStartTimeSlot() < (timeSlot.getStartTimeSlot() + gridProperties.getEquipletLoadWindow() - 1)){
 					
+					// current product step larger than the window (ends after and starts before the window)
+					if(productStepSchedule.getStartTimeSlot() + productStepSchedule.getDuration() - 1 > (timeSlot.getStartTimeSlot() + gridProperties.getEquipletLoadWindow()) - 1 &&  
+							productStepSchedule.getStartTimeSlot() < timeSlot.getStartTimeSlot()) {
+						System.out.println("A ");
+						return 1;
+					}
 					// current product step starts before the start of the window
-					if(productStepSchedule.getStartTimeSlot() < timeSlot.getStartTimeSlot()){
-						//System.out.println("A" + (productStepSchedule.getDuration() - (timeSlot.getStartTimeSlot() - productStepSchedule.getStartTimeSlot())));
+					else if(productStepSchedule.getStartTimeSlot() < timeSlot.getStartTimeSlot()){
+						System.out.println("B " + (productStepSchedule.getDuration() - (timeSlot.getStartTimeSlot() - productStepSchedule.getStartTimeSlot())));
 						amountOfTimeSlotsBusy += productStepSchedule.getDuration() - (timeSlot.getStartTimeSlot() - productStepSchedule.getStartTimeSlot());
 						//amountOfTimeSlotsBusy +=  productStepSchedule.getDuration() - (productStepSchedule.getStartTimeSlot() - timeSlot.getStartTimeSlot());
 					}
 					// current product step ends after the end of the window
 					else if(productStepSchedule.getStartTimeSlot() + productStepSchedule.getDuration() - 1 > (timeSlot.getStartTimeSlot() + gridProperties.getEquipletLoadWindow()) - 1){
-						//System.out.println("B" + ((timeSlot.getStartTimeSlot() + gridProperties.getEquipletLoadWindow() - 1) - productStepSchedule.getStartTimeSlot()));
+						System.out.println("C " + ((timeSlot.getStartTimeSlot() + gridProperties.getEquipletLoadWindow() - 1) - productStepSchedule.getStartTimeSlot()));
 						amountOfTimeSlotsBusy += (timeSlot.getStartTimeSlot() + gridProperties.getEquipletLoadWindow() - 1) - productStepSchedule.getStartTimeSlot();
 						//amountOfTimeSlotsBusy += productStepSchedule.getDuration() - (productStepSchedule.getStartTimeSlot() - timeSlot.getStartTimeSlot());
 						break;
 					}
+					// current product step in in the load window
 					else{
-						//System.out.println("C" + (productStepSchedule.getDuration()));
+						System.out.println("D " + (productStepSchedule.getDuration()));
 						amountOfTimeSlotsBusy += productStepSchedule.getDuration();
 					}
 				}

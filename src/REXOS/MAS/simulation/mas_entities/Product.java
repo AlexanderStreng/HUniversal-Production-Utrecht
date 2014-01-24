@@ -150,8 +150,8 @@ public class Product implements Updatable{
 				//double loadValue = equiplets[row].getLoad(new TimeSlot(scheduleTimeSlot, 0));
 				long deadlineInTimeSlots = TimeSlot.getTimeSlotFromMillis(this.grid.getGridProperties(), deadline);
 				double loadValue = equiplets[row].getLoad(new TimeSlot(scheduleTimeSlot, (deadlineInTimeSlots - scheduleTimeSlot)));
-				System.out.println(scheduleTimeSlot + " " + deadlineInTimeSlots + " " + simulation.getCurrentSimulationTime() + " " + this.deadline);
-				System.out.println(equiplets[row] + ": " + loadValue);
+				//System.out.println(scheduleTimeSlot + " " + deadlineInTimeSlots + " " + simulation.getCurrentSimulationTime() + " " + this.deadline);
+				//System.out.println(equiplets[row] + ": " + loadValue);
 				if(loadValue >= loadTreshold){
 					throw new Exception("Loadthreshold has been reached. Stopping scheduling.");
 				}
@@ -166,8 +166,8 @@ public class Product implements Updatable{
 				scheduleTimeSlot += grid.GetMeanDistance(); 
 			}
 		}
-		System.out.println("Product {" + this + "} schedule: ");
-		//scheduleMatrix.show();
+		/*System.out.println("Product {" + this + "} schedule: ");
+		scheduleMatrix.show();*/
 		return scheduleMatrix;
 	}
 
@@ -267,8 +267,10 @@ public class Product implements Updatable{
 				}
 			}
 		} catch(Exception e){
+			System.err.println(this);
 			e.getStackTrace();
 			e.printStackTrace();
+			e.printStackTrace(System.err);
 
 			System.out.println("Really ...");
 		}
